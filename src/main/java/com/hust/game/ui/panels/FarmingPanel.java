@@ -59,15 +59,18 @@ public class FarmingPanel extends JPanel {
             plotBtn.setOpaque(false);
             plotBtn.setContentAreaFilled(false);
             
-            // Bỏ hoàn toàn mọi khung viền
+            // Bỏ hoàn toàn mọi khung viền và hiệu ứng mặc định
             plotBtn.setBorder(null);
+            plotBtn.setBorderPainted(false);
+            plotBtn.setFocusPainted(false);
+            plotBtn.setFocusable(false); // Ngăn không cho nút nhận focus để tránh hiện ô xám
             plotBtn.setCursor(new Cursor(Cursor.HAND_CURSOR));
 
             plotBtn.addMouseListener(new java.awt.event.MouseAdapter() {
                 public void mouseEntered(java.awt.event.MouseEvent evt) {
-                    // Không dùng viền, chỉ đổi màu nền cực mờ để báo hiệu
-                    plotBtn.setContentAreaFilled(true);
-                    plotBtn.setBackground(new Color(255, 255, 255, 25)); 
+                    // Dùng màu nền mờ để báo hiệu nhưng không bật contentAreaFilled để tránh lỗi xám
+                    plotBtn.setBackground(new Color(255, 255, 255, 40)); 
+                    plotBtn.setOpaque(false); 
                 }
                 public void mouseExited(java.awt.event.MouseEvent evt) {
                     plotBtn.setContentAreaFilled(false);
@@ -85,19 +88,20 @@ public class FarmingPanel extends JPanel {
         btnShop.setBounds(770, 230, 110, 120);
         btnShop.setOpaque(false);
         btnShop.setContentAreaFilled(false);
-        // Bỏ hoàn toàn viền
+        // Bỏ hoàn toàn viền và hiệu ứng mặc định
         btnShop.setBorder(null); 
+        btnShop.setBorderPainted(false);
+        btnShop.setFocusPainted(false);
+        btnShop.setFocusable(false); // Ngăn không cho nút nhận focus để tránh hiện ô xám
         btnShop.setCursor(new Cursor(Cursor.HAND_CURSOR));
         btnShop.setToolTipText("Mở Cửa hàng hạt giống");
 
         btnShop.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseEntered(java.awt.event.MouseEvent evt) {
-                // Không dùng viền vàng, chỉ đổi màu nền rất nhẹ
-                btnShop.setContentAreaFilled(true);
-                btnShop.setBackground(new Color(255, 255, 255, 15));
+                btnShop.setBackground(new Color(255, 255, 255, 30));
             }
             public void mouseExited(java.awt.event.MouseEvent evt) {
-                btnShop.setContentAreaFilled(false);
+                btnShop.setBackground(new Color(0, 0, 0, 0));
             }
         });
 

@@ -42,10 +42,12 @@ public class WorldMapPanel extends JPanel {
         btn.setBounds(x, y, w, h);
         btn.setToolTipText(name);
         
-        // Làm nút tàng hình nhưng vẫn có thể click
+        // Làm nút tàng hình nhưng vẫn có thể click, loại bỏ hiệu ứng chọn
         btn.setOpaque(false);
         btn.setContentAreaFilled(false);
         btn.setBorderPainted(false);
+        btn.setFocusPainted(false);
+        btn.setFocusable(false); // Ngăn không cho nút nhận focus
         
         // Hiệu ứng hover để người chơi biết chỗ đó bấm được
         btn.setCursor(new Cursor(Cursor.HAND_CURSOR));
