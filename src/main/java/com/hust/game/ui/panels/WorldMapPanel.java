@@ -15,41 +15,68 @@ public class WorldMapPanel extends JPanel {
     private BufferedImage backgroundImage;
     private GameWindow window;
     private StatsPanel statsPanel;
+    private java.util.List<ButtonInfo> buttons = new java.util.ArrayList<>();
+    private final double BASE_W = 1000.0;
+    private final double BASE_H = 650.0;
+
+    private static class ButtonInfo {
+        JButton btn;
+        int origX, origY, origW, origH;
+        ButtonInfo(JButton btn, int x, int y, int w, int h) {
+            this.btn = btn; this.origX = x; this.origY = y; this.origW = w; this.origH = h;
+        }
+    }
 
     public WorldMapPanel(GameWindow window, StatsPanel statsPanel) {
         this.window = window;
         this.statsPanel = statsPanel;
         
-        setLayout(null); // Sử dụng Absolute Layout để đặt nút chính xác lên hòn đảo
+        setLayout(null); 
 
         try {
-            // Load ảnh từ thư mục assets
             backgroundImage = ImageIO.read(new File("assets/world_map.png"));
         } catch (Exception e) {
-            System.err.println("❌ Lỗi: Không tìm thấy ảnh assets/world_map.png. Vui lòng kiểm tra lại đường dẫn.");
+            System.err.println("❌ Lỗi: Không tìm thấy ảnh assets/world_map.png.");
         }
 
-        // Đặt các Hotspots (Tọa độ này cần tinh chỉnh theo kích thước ảnh thực tế)
-        // Lưu ý: Tọa độ bên dưới là ước lượng dựa trên ảnh bạn gửi
         createIslandButton("Sơn La", 100, 250, 150, 100, "MAP_SONLA", 1);
         createIslandButton("C2 - Ký túc xá", 200, 50, 150, 100, "MAP_C2", 2);
         createIslandButton("D9 - Mê cung", 600, 500, 200, 150, "MAP_D9", 3);
         createIslandButton("B1 - Arena", 650, 350, 150, 120, "MAP_B1", 4);
+
+        this.addComponentListener(new java.awt.event.ComponentAdapter() {
+            @Override
+            public void componentResized(java.awt.event.ComponentEvent e) {
+                repositionComponents();
+            }
+        });
+    }
+
+    private void repositionComponents() {
+        double scaleX = getWidth() / BASE_W;
+        double scaleY = getHeight() / BASE_H;
+
+        for (ButtonInfo info : buttons) {
+            info.btn.setBounds(
+                (int)(info.origX * scaleX), 
+                (int)(info.origY * scaleY), 
+                (int)(info.origW * scaleX), 
+                (int)(info.origH * scaleY)
+            );
+        }
+        revalidate();
+        repaint();
     }
 
     private void createIslandButton(String name, int x, int y, int w, int h, String cardName, int mapID) {
         JButton btn = new JButton();
-        btn.setBounds(x, y, w, h);
         btn.setToolTipText(name);
         
-        // Làm nút tàng hình nhưng vẫn có thể click, loại bỏ hiệu ứng chọn
         btn.setOpaque(false);
         btn.setContentAreaFilled(false);
         btn.setBorderPainted(false);
         btn.setFocusPainted(false);
-        btn.setFocusable(false); // Ngăn không cho nút nhận focus
-        
-        // Hiệu ứng hover để người chơi biết chỗ đó bấm được
+        btn.setFocusable(false);
         btn.setCursor(new Cursor(Cursor.HAND_CURSOR));
 
         btn.addActionListener(e -> {
@@ -61,6 +88,7 @@ public class WorldMapPanel extends JPanel {
             statsPanel.updateStats();
         });
 
+        buttons.add(new ButtonInfo(btn, x, y, w, h));
         add(btn);
     }
 

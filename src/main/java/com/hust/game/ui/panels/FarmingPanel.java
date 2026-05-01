@@ -18,14 +18,21 @@ public class FarmingPanel extends JPanel {
     private SonLaMap sonLaLogic;
     private StatsPanel statsPanel;
     private GameWindow window;
-    private JPanel gridPanel;
+
+    private JButton btnBack;
+    private JButton btnShop;
+    private JButton btnGardenArea;
+    
+    // Kích thước chuẩn khi thiết kế (Base resolution)
+    private final double BASE_W = 1000.0;
+    private final double BASE_H = 650.0; // Khoảng trống còn lại sau StatsPanel
 
     public FarmingPanel(GameWindow window, StatsPanel statsPanel) {
         this.window = window;
         this.statsPanel = statsPanel;
         this.sonLaLogic = new SonLaMap();
 
-        setLayout(null); // Absolute Layout
+        setLayout(null); 
 
         try {
             backgroundImage = ImageIO.read(new File("assets/sonla_map.png"));
@@ -34,58 +41,75 @@ public class FarmingPanel extends JPanel {
         }
 
         // 1. Nút quay lại
-        JButton btnBack = new JButton("⬅ Về World Map");
-        btnBack.setBounds(10, 10, 150, 30);
+        btnBack = new JButton("⬅ Về World Map");
         btnBack.addActionListener(e -> window.showPanel("WORLD_MAP"));
         add(btnBack);
 
-        // 2. Lưới 48 ô đất (Tiếp tục đẩy lên cao)
-        gridPanel = new JPanel(new GridLayout(6, 8, 2, 2)); 
-        gridPanel.setOpaque(false);
-        // Tọa độ mới tinh chỉnh: Y=260
-        gridPanel.setBounds(60, 260, 750, 320); 
+        // 2. Vùng bấm "Khu vườn" (Bao phủ toàn bộ 48 ô đất)
+        btnGardenArea = new JButton();
+        btnGardenArea.setOpaque(false);
+        btnGardenArea.setContentAreaFilled(false);
+        btnGardenArea.setBorder(BorderFactory.createLineBorder(new Color(255, 255, 255, 50), 1)); // Viền mờ để nhận diện vùng
+        btnGardenArea.setFocusPainted(false);
+        btnGardenArea.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        btnGardenArea.setToolTipText("Bấm để quản lý khu vườn");
+        btnGardenArea.addActionListener(e -> selectPlotAndAct());
+        add(btnGardenArea);
 
-        setupPlots();
-        add(gridPanel);
+        // 3. Hotspot Shop Menu
+        btnShop = createShopButton();
+        add(btnShop);
 
-        // 3. Hotspot Shop Menu (Tiếp tục dịch trái và lên)
-        createShopButton();
+        // Lắng nghe sự kiện thay đổi kích thước cửa sổ
+        this.addComponentListener(new java.awt.event.ComponentAdapter() {
+            @Override
+            public void componentResized(java.awt.event.ComponentEvent e) {
+                repositionComponents();
+            }
+        });
     }
 
-    private void setupPlots() {
+    private void repositionComponents() {
+        double scaleX = getWidth() / BASE_W;
+        double scaleY = getHeight() / BASE_H;
+
+        // Cập nhật vị trí nút Back
+        btnBack.setBounds((int)(10 * scaleX), (int)(10 * scaleY), (int)(150 * scaleX), (int)(30 * scaleY));
+
+        // Vùng vườn (Gốc: 60, 260, 750, 320)
+        btnGardenArea.setBounds((int)(60 * scaleX), (int)(260 * scaleY), (int)(750 * scaleX), (int)(320 * scaleY));
+
+        // Cập nhật vị trí nút Shop (Gốc: 770, 230, 110, 120)
+        btnShop.setBounds((int)(770 * scaleX), (int)(230 * scaleY), (int)(110 * scaleX), (int)(120 * scaleY));
+        
+        revalidate();
+        repaint();
+    }
+
+    private void selectPlotAndAct() {
+        // Tạo danh sách 48 ô đất
+        String[] plots = new String[48];
         for (int i = 0; i < 48; i++) {
-            final int index = i;
-            JButton plotBtn = new JButton();
-            plotBtn.setOpaque(false);
-            plotBtn.setContentAreaFilled(false);
-            
-            // Bỏ hoàn toàn mọi khung viền và hiệu ứng mặc định
-            plotBtn.setBorder(null);
-            plotBtn.setBorderPainted(false);
-            plotBtn.setFocusPainted(false);
-            plotBtn.setFocusable(false); // Ngăn không cho nút nhận focus để tránh hiện ô xám
-            plotBtn.setCursor(new Cursor(Cursor.HAND_CURSOR));
+            plots[i] = "Ô đất số " + (i + 1);
+        }
 
-            plotBtn.addMouseListener(new java.awt.event.MouseAdapter() {
-                public void mouseEntered(java.awt.event.MouseEvent evt) {
-                    // Dùng màu nền mờ để báo hiệu nhưng không bật contentAreaFilled để tránh lỗi xám
-                    plotBtn.setBackground(new Color(255, 255, 255, 40)); 
-                    plotBtn.setOpaque(false); 
-                }
-                public void mouseExited(java.awt.event.MouseEvent evt) {
-                    plotBtn.setContentAreaFilled(false);
-                }
-            });
+        String selectedPlot = (String) JOptionPane.showInputDialog(this, 
+                "Chọn ô đất bạn muốn quản lý:", 
+                "Quản lý Khu vườn", 
+                JOptionPane.PLAIN_MESSAGE, 
+                null, 
+                plots, 
+                plots[0]);
 
-            plotBtn.addActionListener(e -> showActionMenu(index));
-            gridPanel.add(plotBtn);
+        if (selectedPlot != null) {
+            // Lấy index từ chuỗi "Ô đất số X"
+            int plotIndex = Integer.parseInt(selectedPlot.replace("Ô đất số ", "")) - 1;
+            showActionMenu(plotIndex);
         }
     }
 
-    private void createShopButton() {
+    private JButton createShopButton() {
         JButton btnShop = new JButton();
-        // Vị trí tinh chỉnh: X=770, Y=230
-        btnShop.setBounds(770, 230, 110, 120);
         btnShop.setOpaque(false);
         btnShop.setContentAreaFilled(false);
         // Bỏ hoàn toàn viền và hiệu ứng mặc định
@@ -109,7 +133,7 @@ public class FarmingPanel extends JPanel {
             ShopDialog dialog = new ShopDialog((Frame) SwingUtilities.getWindowAncestor(this), statsPanel);
             dialog.setVisible(true);
         });
-        add(btnShop);
+        return btnShop;
     }
 
     private void showActionMenu(int plotIndex) {
@@ -117,7 +141,9 @@ public class FarmingPanel extends JPanel {
         if (plot == null) return;
 
         String[] options = {"Cuốc đất (-2⚡)", "Gieo hạt Ngô", "Gieo hạt Lúa", "Thu hoạch", "Hủy"};
-        int choice = JOptionPane.showOptionDialog(this, "Hành động cho ô đất " + (plotIndex + 1), 
+        String message = "Đang chọn: Ô đất số " + (plotIndex + 1) + "\nTrạng thái: " + plot.getStatusText();
+        
+        int choice = JOptionPane.showOptionDialog(this, message, 
                 "Quản lý Nông trại", JOptionPane.DEFAULT_OPTION, JOptionPane.PLAIN_MESSAGE, null, options, options[0]);
 
         switch (choice) {

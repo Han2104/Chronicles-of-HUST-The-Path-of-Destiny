@@ -20,11 +20,13 @@ public class FarmPlot {
         return currentState;
     }
 
-    public void till() {
+    public boolean till() {
         if (currentState == State.EMPTY) {
             currentState = State.TILLED;
             System.out.println("✅ Ô đất đã được cuốc sạch cỏ.");
+            return true;
         }
+        return false;
     }
 
     public void plant(Seed seed) {
@@ -50,6 +52,16 @@ public class FarmPlot {
         currentState = State.EMPTY;
         plantedSeed = null;
         plantTime = 0;
+    }
+
+    public String getStatusText() {
+        switch (getCurrentState()) {
+            case EMPTY: return "Đất trống (Cần cuốc)";
+            case TILLED: return "Đã cuốc (Sẵn sàng gieo hạt)";
+            case PLANTED: return "Đang trồng: " + (plantedSeed != null ? plantedSeed.getName() : "Unknown");
+            case READY: return "Đã chín (Sẵn sàng thu hoạch)";
+            default: return "Không xác định";
+        }
     }
 
     public Seed getPlantedSeed() { return plantedSeed; }

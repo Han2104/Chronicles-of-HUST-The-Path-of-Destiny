@@ -29,9 +29,12 @@ public class SonLaMap {
         switch (action.toLowerCase()) {
             case "till": // Cuốc đất: -2 Energy
                 if (player.getEnergy() >= 2) {
-                    plot.till();
-                    player.setEnergy(player.getEnergy() - 2);
-                    System.out.println("⚡ Năng lượng còn lại: " + player.getEnergy());
+                    if (plot.till()) {
+                        player.setEnergy(player.getEnergy() - 2);
+                        System.out.println("⚡ Năng lượng còn lại: " + player.getEnergy());
+                    } else {
+                        System.out.println("ℹ️ Ô đất này đã được cuốc rồi!");
+                    }
                 } else {
                     System.out.println("❌ Vũ quá mệt để cuốc đất!");
                 }
@@ -48,9 +51,14 @@ public class SonLaMap {
                 break;
 
             case "harvest":
-                double reward = plot.harvest();
-                if (reward > 0) {
-                    player.addFinance(reward);
+                double baseReward = plot.harvest();
+                if (baseReward > 0) {
+                    double finalReward = baseReward * player.getHarvestMultiplier();
+                    player.addFinance(finalReward);
+                    
+                    // Nhận EXP dựa trên loại cây (Lúa > Ngô)
+                    int expGain = plot.getPlantedSeed().getExpReward();
+                    player.addExp(expGain); 
                 } else {
                     System.out.println("⏳ Cây chưa chín hoặc đất trống.");
                 }
