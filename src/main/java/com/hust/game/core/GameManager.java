@@ -1,6 +1,7 @@
 package com.hust.game.core;
 
 import com.hust.game.models.entities.Player;
+import javax.swing.JOptionPane;
 
 /**
  * GameManager - Singleton điều phối toàn bộ trạng thái và logic chuyển map của game.
@@ -8,12 +9,91 @@ import com.hust.game.models.entities.Player;
 public class GameManager {
     private static GameManager instance;
     private Player player;
-    private int currentMapID;
     private javax.swing.Timer energyRegenTimer;
     private com.hust.game.ui.panels.StatsPanel statsPanel;
     private com.hust.game.ui.GameWindow window;
-
+    private int currentHour = 8;
+    private int currentMapID = 0; // 0: World Map
     private int cityRegenCounter = 0;
+    private long lastLazySpawnTime = 0;
+    private long lastEscapeTime = 0;
+    private int tickCount = 0;
+
+    public void triggerLazyEncounter() {
+        if (currentMapID != 2) return;
+        
+        long now = System.currentTimeMillis();
+        int interval = (player.getWillpower() < 40) ? 180000 : 300000; // 3 min vs 5 min
+        
+        if (now - lastLazySpawnTime < interval) return;
+
+        lastLazySpawnTime = now;
+        
+        // Chọn ngẫu nhiên loại NPC
+        double rand = Math.random();
+        com.hust.game.models.entities.LazyNPC npc;
+        if (rand < 0.6) npc = com.hust.game.models.entities.LazyNPC.SLEEPY;
+        else if (rand < 0.9) npc = com.hust.game.models.entities.LazyNPC.GAMER;
+        else npc = com.hust.game.models.entities.LazyNPC.TEA_LORD;
+
+        // Hiển thị dialog đối đầu
+        javax.swing.SwingUtilities.invokeLater(() -> {
+            com.hust.game.ui.panels.LazyEncounterDialog dialog = new com.hust.game.ui.panels.LazyEncounterDialog(window, statsPanel, npc);
+            dialog.setVisible(true);
+        });
+    }
+
+    public long getLastEscapeTime() { return lastEscapeTime; }
+    public void setLastEscapeTime(long time) { this.lastEscapeTime = time; }
+
+    public int getGameHour() { return currentHour; }
+    public void setGameHour(int hour) { this.currentHour = hour % 24; }
+    public int getCurrentMapID() { return currentMapID; }
+    
+    public void handleMap2Actions(String action) {
+        Player p = getPlayer();
+        switch (action) {
+            case "CHECKIN":
+                if (p.isCheckInLocked()) {
+                    long remain = (p.getCheckInLockedUntil() - System.currentTimeMillis()) / 60000;
+                    JOptionPane.showMessageDialog(null, "Bạn đang bị khóa Check-in! Còn: " + remain + " phút");
+                    break;
+                }
+                if (currentHour >= 6 && currentHour <= 8) {
+                    if (p.hasCheckedInMorning()) {
+                        JOptionPane.showMessageDialog(null, "Bạn đã điểm danh sáng nay rồi!");
+                        break;
+                    }
+                    p.addDisciplineScore(5);
+                    p.addWillpower(2);
+                    p.setHasCheckedInMorning(true);
+                    System.out.println("✅ Check-in sáng thành công!");
+                } else if (currentHour >= 21 && currentHour <= 23) {
+                    if (p.hasCheckedInEvening()) {
+                        JOptionPane.showMessageDialog(null, "Bạn đã điểm danh tối nay rồi!");
+                        break;
+                    }
+                    p.addDisciplineScore(5);
+                    p.addWillpower(1);
+                    p.setHasCheckedInEvening(true);
+                    System.out.println("✅ Check-in tối thành công!");
+                } else {
+                    JOptionPane.showMessageDialog(null, "Chưa đến giờ điểm danh! (Sáng: 6-8h, Tối: 21-23h)");
+                }
+                break;
+            case "WORK":
+                if (p.getEnergy() >= 3) {
+                    p.setEnergy(p.getEnergy() - 3);
+                    int salary = 15 + (int)(Math.random() * 16); // 15-30 VNĐ
+                    p.addFinance(salary);
+                    System.out.println("💼 Đã làm thêm, nhận được: " + salary + " VNĐ");
+                } else {
+                    System.out.println("❌ Quá mệt để làm thêm!");
+                }
+                break;
+        }
+        if (statsPanel != null) statsPanel.updateStats();
+    }
     
     public void setWindow(com.hust.game.ui.GameWindow window) {
         this.window = window;
@@ -37,32 +117,35 @@ public class GameManager {
     }
 
     private GameManager() {
-        // Khởi tạo nhân vật Vũ với các chỉ số mặc định từ GDD
         player = new Player("Vũ");
-        currentMapID = 0; // 0: World Map
-        
-        // Khởi tạo cơ chế hồi năng lượng động
-        // Tần suất: 30 giây / lần kiểm tra
+        currentMapID = 0; 
+
         energyRegenTimer = new javax.swing.Timer(30000, e -> {
+            if (player == null) return;
+
+            // 1. Hồi năng lượng
             if (player.getEnergy() < player.getMaxEnergy()) {
-                if (currentMapID == 1) {
-                    // Sơn La (Quê): Hồi +1 mỗi 30 giây
+                if (currentMapID == 1) { // Map Quê
                     player.addEnergy(1);
-                    System.out.println("♻️ [QUÊ] Đã hồi 1 năng lượng (30s)");
-                } else {
-                    // Thành phố: Hồi +1 mỗi 60 giây (tức là 2 chu kỳ 30s)
-                    cityRegenCounter++;
-                    if (cityRegenCounter >= 2) {
-                        player.addEnergy(1);
-                        cityRegenCounter = 0;
-                        System.out.println("♻️ [PHỐ] Đã hồi 1 năng lượng (60s)");
-                    }
-                }
-                
-                if (statsPanel != null) {
-                    statsPanel.updateStats();
+                } else { // Thành phố (Map 2 + World)
+                    if (tickCount % 2 == 0) player.addEnergy(1); 
                 }
             }
+
+            // 2. Cập nhật giờ game (2 ticks = 1 giờ game = 60s)
+            tickCount++;
+            if (tickCount >= 2) {
+                currentHour = (currentHour + 1) % 24;
+                tickCount = 0;
+                System.out.println("🕓 Giờ hiện tại: " + currentHour + ":00");
+                
+                // Reset Check-in khi qua buổi
+                if (currentHour == 9) player.setHasCheckedInMorning(false);
+                if (currentHour == 0) player.setHasCheckedInEvening(false);
+            }
+
+            if (statsPanel != null) statsPanel.updateStats();
+            triggerLazyEncounter();
         });
         energyRegenTimer.start();
     }
@@ -108,9 +191,5 @@ public class GameManager {
             default:
                 System.out.println("⚠️ Lỗi: Map ID không hợp lệ.");
         }
-    }
-
-    public int getCurrentMapID() {
-        return currentMapID;
     }
 }

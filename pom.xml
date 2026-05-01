@@ -15,10 +15,7 @@
     </properties>
 
     <build>
-<<<<<<< HEAD
-        <sourceDirectory>src</sourceDirectory>
-=======
->>>>>>> test
+        <sourceDirectory>src/main/java</sourceDirectory>
         <resources>
             <resource>
                 <directory>assets</directory>

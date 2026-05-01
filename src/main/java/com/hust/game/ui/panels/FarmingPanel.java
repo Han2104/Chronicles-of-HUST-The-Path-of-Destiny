@@ -49,7 +49,7 @@ public class FarmingPanel extends JPanel {
         btnGardenArea = new JButton();
         btnGardenArea.setOpaque(false);
         btnGardenArea.setContentAreaFilled(false);
-        btnGardenArea.setBorder(BorderFactory.createLineBorder(new Color(255, 255, 255, 50), 1)); // Viền mờ để nhận diện vùng
+        btnGardenArea.setBorder(null); 
         btnGardenArea.setFocusPainted(false);
         btnGardenArea.setCursor(new Cursor(Cursor.HAND_CURSOR));
         btnGardenArea.setToolTipText("Bấm để quản lý khu vườn");
@@ -139,7 +139,7 @@ public class FarmingPanel extends JPanel {
         com.hust.game.models.farming.FarmPlot plot = sonLaLogic.getPlot(plotIndex);
         if (plot == null) return;
 
-        String[] options = {"Gieo hạt Ngô", "Gieo hạt Lúa", "Thu hoạch", "Hủy"};
+        String[] options = {"Gieo hạt Ngô", "Gieo hạt Lúa", "Thu hoạch", "⬅ Quay lại chọn ô khác", "Hủy"};
         String message = "Đang chọn: Ô đất số " + (plotIndex + 1) + "\nTrạng thái: " + plot.getStatusText();
         
         int choice = JOptionPane.showOptionDialog(this, message, 
@@ -152,11 +152,17 @@ public class FarmingPanel extends JPanel {
             case 1: 
                 sonLaLogic.interactWithPlot(plotIndex, "plant", Seed.PADDY);
                 break;
-            case 2: 
-                sonLaLogic.interactWithPlot(plotIndex, "harvest", null); 
+            case 2:
+                sonLaLogic.interactWithPlot(plotIndex, "harvest", null);
                 break;
+            case 3: // Quay lại danh sách
+                selectPlotAndAct();
+                return; // Kết thúc hàm này để không cập nhật stats 2 lần
+            default:
+                return;
         }
         statsPanel.updateStats();
+        repaint();
     }
 
     @Override

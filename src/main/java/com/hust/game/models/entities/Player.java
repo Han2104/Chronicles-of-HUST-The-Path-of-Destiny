@@ -15,12 +15,15 @@ public class Player {
     private int maxEnergy = 20;  // Mặc định ban đầu
     private double finance;      
     private double maxFinance = 500.0; 
-    private int willpower;       
+    private int willpower = 30;       
     private int maxWillpower = 100;
-    private int disciplineScore; 
-    private int solutionSkill;   
+    private int disciplineScore = 0; 
+    private int maxDisciplineScore = 100;
+    private int solutionSkill = 0;
     private int maxSolutionSkill = 100;
-    
+    private int hp = 100;
+    private int maxHpCombat = 100;
+
     // Hệ thống cấp độ (Leveling System)
     private int level = 1;
     private int exp = 0;
@@ -34,13 +37,24 @@ public class Player {
     private boolean hustLegendEnabled = false;
     
     // Trang bị và Buff tạm thời
+    private long checkInLockedUntil = 0;
+    private boolean hasStrategyNotebook = false;
+    private boolean hasCheckedInMorning = false;
+    private boolean hasCheckedInEvening = false;
     private boolean ironHoeEquipped = false;
     private double willpowerMultiplier = 1.0;
+    private int checkInStreak = 0;
     
-    // Tiến trình (Progress Flags) - Cần thiết cho các getter/setter phía dưới
+    // Tiến trình (Progress Flags)
     private boolean completedMap1 = false;
     private boolean completedMap2 = false;
-    private int currentD9Floor = 0;
+    private int currentD9Floor = 1; // Bắt đầu từ tầng 1
+
+    private int lazyWins = 0;
+    private int lazyWinStreak = 0;
+    private boolean hasCalculusBook = false;
+    private boolean hasAlgebraBook = false;
+    private boolean hasOOPBook = false;
 
     public Player(String name) {
         this.name = name;
@@ -154,13 +168,13 @@ public class Player {
     public double getHarvestMultiplier() { return harvestMultiplier; }
 
     public int getDisciplineScore() { return disciplineScore; }
-    public void addDiscipline(int points) {
-        this.disciplineScore = Math.min(this.disciplineScore + points, 100);
+    public void addDisciplineScore(int amount) {
+        this.disciplineScore = Math.min(this.disciplineScore + amount, maxDisciplineScore);
     }
 
     public int getWillpower() { return willpower; }
-    public void setWillpower(int willpower) {
-        this.willpower = Math.max(0, Math.min(willpower, maxWillpower));
+    public void addWillpower(int amount) {
+        this.willpower = Math.max(0, Math.min(this.willpower + amount, maxWillpower));
     }
 
     public int getSolutionSkill() { return solutionSkill; }
@@ -171,7 +185,6 @@ public class Player {
     public String getName() { return name; }
 
     // --- Progress Management ---
-
     public boolean isCompletedMap1() { return completedMap1; }
     public void setCompletedMap1(boolean status) { this.completedMap1 = status; }
 
@@ -200,6 +213,9 @@ public class Player {
         return inventory.getOrDefault(itemName, 0);
     }
 
+    public int getCheckInStreak() { return checkInStreak; }
+    public void setCheckInStreak(int streak) { this.checkInStreak = streak; }
+
     public boolean isIronHoeEquipped() { return ironHoeEquipped; }
     public void setIronHoeEquipped(boolean status) { this.ironHoeEquipped = status; }
     
@@ -216,4 +232,44 @@ public class Player {
         timer.setRepeats(false);
         timer.start();
     }
+
+    public int getLazyWins() { return lazyWins; }
+    public void addLazyWin() { 
+        this.lazyWins++; 
+        this.lazyWinStreak++;
+    }
+    public int getLazyWinStreak() { return lazyWinStreak; }
+    public void resetLazyWinStreak() { this.lazyWinStreak = 0; }
+    
+    public long getCheckInLockedUntil() { return checkInLockedUntil; }
+    public void lockCheckIn(int minutes) {
+        this.checkInLockedUntil = System.currentTimeMillis() + (minutes * 60 * 1000L);
+    }
+    public boolean isCheckInLocked() {
+        return System.currentTimeMillis() < checkInLockedUntil;
+    }
+
+    public boolean hasCheckedInMorning() { return hasCheckedInMorning; }
+    public void setHasCheckedInMorning(boolean status) { this.hasCheckedInMorning = status; }
+    
+    public boolean hasCheckedInEvening() { return hasCheckedInEvening; }
+    public void setHasCheckedInEvening(boolean status) { this.hasCheckedInEvening = status; }
+
+    public int getHp() { return hp; }
+    public void addHp(int amount) {
+        this.hp = Math.max(0, Math.min(this.hp + amount, maxHpCombat));
+    }
+    public int getMaxHpCombat() { return maxHpCombat; }
+
+    public boolean hasCalculusBook() { return hasCalculusBook; }
+    public void setHasCalculusBook(boolean has) { this.hasCalculusBook = has; }
+
+    public boolean hasAlgebraBook() { return hasAlgebraBook; }
+    public void setHasAlgebraBook(boolean has) { this.hasAlgebraBook = has; }
+
+    public boolean hasOOPBook() { return hasOOPBook; }
+    public void setHasOOPBook(boolean has) { this.hasOOPBook = has; }
+
+    public boolean hasStrategyNotebook() { return hasStrategyNotebook; }
+    public void setHasStrategyNotebook(boolean has) { this.hasStrategyNotebook = has; }
 }
