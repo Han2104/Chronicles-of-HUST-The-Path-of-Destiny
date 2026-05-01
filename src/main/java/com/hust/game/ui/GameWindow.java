@@ -26,6 +26,10 @@ public class GameWindow extends JFrame {
         // 1. Thanh trạng thái cố định ở trên
         statsPanel = new StatsPanel();
         add(statsPanel, BorderLayout.NORTH);
+        
+        // Liên kết StatsPanel với GameManager để hỗ trợ cập nhật UI khi hồi năng lượng
+        com.hust.game.core.GameManager.getInstance().setStatsPanel(statsPanel);
+        com.hust.game.core.GameManager.getInstance().setWindow(this);
 
         // 2. Container chính sử dụng CardLayout để chuyển cảnh
         cardLayout = new CardLayout();

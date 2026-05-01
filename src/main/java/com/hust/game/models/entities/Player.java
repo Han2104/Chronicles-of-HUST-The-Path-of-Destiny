@@ -33,6 +33,10 @@ public class Player {
     private boolean resistDisciplinePenalty = false;
     private boolean hustLegendEnabled = false;
     
+    // Trang bị và Buff tạm thời
+    private boolean ironHoeEquipped = false;
+    private double willpowerMultiplier = 1.0;
+    
     // Tiến trình (Progress Flags) - Cần thiết cho các getter/setter phía dưới
     private boolean completedMap1 = false;
     private boolean completedMap2 = false;
@@ -121,11 +125,24 @@ public class Player {
     }
 
     public int getEnergy() { return energy; }
+    public int getMaxEnergy() { return maxEnergy; }
+    
     public void setEnergy(int energy) {
         this.energy = Math.max(0, Math.min(energy, maxEnergy));
         if (this.energy == 0) {
             System.out.println("⚠️ Vũ đã ngất do cạn năng lượng!");
+            applyFaintPenalty();
+            com.hust.game.core.GameManager.getInstance().handlePlayerFaint();
         }
+    }
+
+    private void applyFaintPenalty() {
+        this.finance = this.finance / 2.0; // Mất 50% tài chính
+        System.out.println("🚑 Vũ đã được đưa đi cấp cứu. Mất 50% tiền. Tài chính còn lại: " + String.format("%.1f", this.finance));
+    }
+
+    public void addEnergy(int amount) {
+        this.energy = Math.min(this.energy + amount, maxEnergy);
     }
 
     public double getFinance() { return finance; }
@@ -181,5 +198,22 @@ public class Player {
 
     public int getItemCount(String itemName) {
         return inventory.getOrDefault(itemName, 0);
+    }
+
+    public boolean isIronHoeEquipped() { return ironHoeEquipped; }
+    public void setIronHoeEquipped(boolean status) { this.ironHoeEquipped = status; }
+    
+    public double getWillpowerMultiplier() { return willpowerMultiplier; }
+    
+    public void startWillpowerBuff(double multiplier, int durationMs) {
+        this.willpowerMultiplier = multiplier;
+        System.out.println("💪 Buff Ý Chí đã được kích hoạt: +" + (int)((multiplier-1)*100) + "%");
+        
+        javax.swing.Timer timer = new javax.swing.Timer(durationMs, e -> {
+            this.willpowerMultiplier = 1.0;
+            System.out.println("⏳ Buff Ý Chí đã hết hiệu lực.");
+        });
+        timer.setRepeats(false);
+        timer.start();
     }
 }

@@ -30,11 +30,11 @@ public class FarmPlot {
     }
 
     public void plant(Seed seed) {
-        if (currentState == State.TILLED) {
+        if (currentState == State.EMPTY) {
             this.plantedSeed = seed;
-            this.plantTime = System.currentTimeMillis();
             this.currentState = State.PLANTED;
-            System.out.println("🌱 Đã gieo: " + seed.getName());
+            this.plantTime = System.currentTimeMillis();
+            System.out.println("✅ Đã gieo: " + seed.getName());
         }
     }
 

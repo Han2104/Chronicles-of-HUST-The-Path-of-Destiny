@@ -27,38 +27,43 @@ public class SonLaMap {
         FarmPlot plot = plots.get(plotIndex);
 
         switch (action.toLowerCase()) {
-            case "till": // Cuốc đất: -2 Energy
-                if (player.getEnergy() >= 2) {
-                    if (plot.till()) {
-                        player.setEnergy(player.getEnergy() - 2);
-                        System.out.println("⚡ Năng lượng còn lại: " + player.getEnergy());
+            case "plant": // Gieo hạt trực tiếp lên đất trống: Tiêu hao 3 Energy
+                if (plot.getCurrentState() == com.hust.game.models.farming.FarmPlot.State.EMPTY) {
+                    if (player.getEnergy() >= 3) {
+                        if (player.useItem(seed.getName())) {
+                            plot.plant(seed);
+                            player.setEnergy(player.getEnergy() - 3);
+                            System.out.println("🌱 Đã cuốc đất và gieo " + seed.getName() + " (-3⚡)");
+                        } else {
+                            System.out.println("❌ Không có hạt giống trong hành trang!");
+                        }
                     } else {
-                        System.out.println("ℹ️ Ô đất này đã được cuốc rồi!");
+                        System.out.println("❌ Vũ không đủ năng lượng để gieo hạt!");
                     }
                 } else {
-                    System.out.println("❌ Vũ quá mệt để cuốc đất!");
-                }
-                break;
-
-            case "plant": // Gieo hạt: Kiểm tra hành trang
-                if (plot.getCurrentState() == com.hust.game.models.farming.FarmPlot.State.TILLED) {
-                    if (player.useItem(seed.getName())) {
-                        plot.plant(seed);
-                    } else {
-                        System.out.println("❌ Không có hạt giống trong hành trang!");
-                    }
+                    System.out.println("ℹ️ Ô đất này hiện không thể gieo hạt.");
                 }
                 break;
 
             case "harvest":
+                // Lấy thông tin hạt giống TRƯỚC KHI thu hoạch (vì thu hoạch xong ô đất sẽ bị xóa sạch)
+                Seed harvestedSeed = plot.getPlantedSeed();
                 double baseReward = plot.harvest();
-                if (baseReward > 0) {
-                    double finalReward = baseReward * player.getHarvestMultiplier();
+                
+                if (baseReward > 0 && harvestedSeed != null) {
+                    double bonus = player.isIronHoeEquipped() ? 1.25 : 1.0;
+                    double finalReward = baseReward * player.getHarvestMultiplier() * bonus;
                     player.addFinance(finalReward);
                     
-                    // Nhận EXP dựa trên loại cây (Lúa > Ngô)
-                    int expGain = plot.getPlantedSeed().getExpReward();
+                    // Nhận EXP dựa trên loại cây
+                    int expGain = harvestedSeed.getExpReward();
                     player.addExp(expGain); 
+
+                    // Loot ngẫu nhiên: Bình Nước Sơn La (10% cơ hội)
+                    if (Math.random() < 0.10) {
+                        player.addItem("Bình Nước Sơn La", 1);
+                        System.out.println("🎁 Bạn tìm thấy 1 Bình Nước Sơn La trong khi thu hoạch!");
+                    }
                 } else {
                     System.out.println("⏳ Cây chưa chín hoặc đất trống.");
                 }

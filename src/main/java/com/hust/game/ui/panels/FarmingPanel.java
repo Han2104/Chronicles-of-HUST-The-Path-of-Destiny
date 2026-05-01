@@ -79,8 +79,8 @@ public class FarmingPanel extends JPanel {
         // Vùng vườn (Gốc: 60, 260, 750, 320)
         btnGardenArea.setBounds((int)(60 * scaleX), (int)(260 * scaleY), (int)(750 * scaleX), (int)(320 * scaleY));
 
-        // Cập nhật vị trí nút Shop (Gốc: 770, 230, 110, 120)
-        btnShop.setBounds((int)(770 * scaleX), (int)(230 * scaleY), (int)(110 * scaleX), (int)(120 * scaleY));
+        // Cập nhật vị trí nút Shop (Dịch sang phải và xuống dưới)
+        btnShop.setBounds((int)(780 * scaleX), (int)(240 * scaleY), (int)(180 * scaleX), (int)(150 * scaleY));
         
         revalidate();
         repaint();
@@ -109,19 +109,18 @@ public class FarmingPanel extends JPanel {
     }
 
     private JButton createShopButton() {
-        JButton btnShop = new JButton();
+        JButton btnShop = new JButton(); // Để trống để tàng hình
         btnShop.setOpaque(false);
         btnShop.setContentAreaFilled(false);
-        // Bỏ hoàn toàn viền và hiệu ứng mặc định
         btnShop.setBorder(null); 
         btnShop.setBorderPainted(false);
         btnShop.setFocusPainted(false);
-        btnShop.setFocusable(false); // Ngăn không cho nút nhận focus để tránh hiện ô xám
         btnShop.setCursor(new Cursor(Cursor.HAND_CURSOR));
-        btnShop.setToolTipText("Mở Cửa hàng hạt giống");
+        btnShop.setToolTipText("Mở Cửa hàng hạt giống (Bấm vào ngôi nhà)");
 
         btnShop.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseEntered(java.awt.event.MouseEvent evt) {
+                // Hiệu ứng mờ nhẹ khi di chuột vào (tùy chọn, để bạn biết chỗ bấm)
                 btnShop.setBackground(new Color(255, 255, 255, 30));
             }
             public void mouseExited(java.awt.event.MouseEvent evt) {
@@ -140,7 +139,7 @@ public class FarmingPanel extends JPanel {
         com.hust.game.models.farming.FarmPlot plot = sonLaLogic.getPlot(plotIndex);
         if (plot == null) return;
 
-        String[] options = {"Cuốc đất (-2⚡)", "Gieo hạt Ngô", "Gieo hạt Lúa", "Thu hoạch", "Hủy"};
+        String[] options = {"Gieo hạt Ngô", "Gieo hạt Lúa", "Thu hoạch", "Hủy"};
         String message = "Đang chọn: Ô đất số " + (plotIndex + 1) + "\nTrạng thái: " + plot.getStatusText();
         
         int choice = JOptionPane.showOptionDialog(this, message, 
@@ -148,15 +147,12 @@ public class FarmingPanel extends JPanel {
 
         switch (choice) {
             case 0: 
-                sonLaLogic.interactWithPlot(plotIndex, "till", null); 
-                break;
-            case 1: // Gieo hạt Ngô
                 sonLaLogic.interactWithPlot(plotIndex, "plant", Seed.CORN);
                 break;
-            case 2: // Gieo hạt Lúa
+            case 1: 
                 sonLaLogic.interactWithPlot(plotIndex, "plant", Seed.PADDY);
                 break;
-            case 3: 
+            case 2: 
                 sonLaLogic.interactWithPlot(plotIndex, "harvest", null); 
                 break;
         }
