@@ -35,68 +35,76 @@ Kết bạn, xây dựng mối quan hệ với các NPC và tham gia các hoạt
 ## Hướng dẫn cài đặt & Chơi
 
 ### Điều kiện tiên quyết
-- Đã cài đặt **Java 17** hoặc phiên bản mới hơn.
-- Đã cài đặt **Maven**.
+- Máy tính đã cài đặt **Java 17** hoặc phiên bản mới hơn.
 
-### Bước 1: Clone Repository
+### Bước 1: Tải mã nguồn
 ```bash
-git clone https://github.com/B21DCPT102/Chronicles-of-HUST.git
-cd Chronicles-of-HUST
+git clone https://github.com/Han2104/Chronicles-of-HUST-The-Path-of-Destiny.git
+cd Chronicles-of-HUST-The-Path-of-Destiny
 ```
 
-### Bước 2: Build dự án
+### Bước 2: Biên dịch và Chạy game (Nhanh nhất)
+Bạn có thể biên dịch toàn bộ và khởi chạy game chỉ với 2 lệnh đơn giản:
+
+**Trên Linux/macOS:**
 ```bash
-mvn clean package
+# Tạo thư mục chứa file thực thi và biên dịch
+mkdir -p bin
+javac -d bin $(find src -name "*.java")
+
+# Chạy game
+java -cp bin com.hust.game.Main
 ```
 
-### Bước 3: Chạy game
-Sau khi build thành công, bạn có thể chạy game bằng lệnh:
-```bash
-mvn exec:java -Dexec.mainClass="Main"
+**Trên Windows (PowerShell):**
+```powershell
+# Tạo thư mục bin
+if (!(Test-Path bin)) { New-Item -ItemType Directory bin }
+
+# Biên dịch tất cả file java
+$javaFiles = Get-ChildItem -Recurse src/*.java | Select-Object -ExpandProperty FullName
+javac -d bin $javaFiles
+
+# Chạy game
+java -cp bin com.hust.game.Main
 ```
 
-Hoặc mở dự án trong **IntelliJ IDEA**, tìm đến file `Main.java` và nhấn **Run**.
-
-### Roadmap (Lộ trình phát triển)
-Thể hiện rằng bạn có tầm nhìn dài hạn cho dự án:
-*   [x] **Phase 1:** Hoàn thiện Map 1 & Hệ thống chỉ số sinh tồn[cite: 1].
-*   [ ] **Phase 2:** Triển khai hệ thống Check-in kỷ luật tại Map 2[cite: 1].
-*   [ ] **Phase 3:** Tích hợp âm thanh và đồ họa nâng cao (LibGDX)[cite: 1].
+---
 
 ## Hướng dẫn chơi cơ bản
 
 ### Giao diện game
-Game sử dụng giao diện **Console (Text-based)** với các tùy chọn được đánh số để người chơi lựa chọn.
+Trò chơi sử dụng giao diện đồ họa **Java Swing**. Bạn sẽ tương tác thông qua chuột (Click) và các phím điều hướng trên màn hình.
 
-### Các phím tắt chính
-- **W, A, S, D:** Di chuyển (ở các khu vực cần di chuyển)
-- **1, 2, 3...:** Chọn hành động
-- **Enter:** Xác nhận
+### Các khu vực chính
+- **World Map:** Lựa chọn các địa điểm để di chuyển (Sơn La, C2, D9, B1).
+- **Nông trại Sơn La:** Click vào các ô đất để Cuốc đất, Gieo hạt (Ngô/Lúa) và Thu hoạch.
+- **Cửa hàng:** Mua thêm hạt giống bằng tiền (VNĐ) kiếm được từ việc bán nông sản.
 
-### Lưu & Tải game
-Game hỗ trợ lưu tiến trình tự động. Bạn có thể tiếp tục chơi tại điểm dừng bất cứ lúc nào.
+### Lưu ý quan trọng
+- Đảm bảo thư mục `assets/` nằm cùng cấp với lệnh chạy để game có thể tải hình ảnh bản đồ.
+- Nếu gặp lỗi hiển thị trong IDE, hãy thực hiện **Invalidate Caches** hoặc **Clean Project**.
 
-## Cấu trúc dự án
+## Cấu trúc dự án hiện tại
 
 ```
-src/main/java/
-├── com/hust/game/
-│   ├── main/             # Logic game chính
-│   ├── entity/           # Định nghĩa các thực thể (Player, NPC, Enemy)
-│   ├── items/            # Hệ thống vật phẩm
-│   ├── skills/           # Kỹ năng và phép thuật
-│   ├── world/            # Xử lý bản đồ và tương tác
-│   └── ui/               # Giao diện người dùng và menu
-└── resources/            # Tài nguyên game
+.
+├── assets/               # Hình ảnh bản đồ (World map, Sơn La)
+├── bin/                  # File đã biên dịch (.class)
+├── src/
+│   └── main/java/
+│       └── com/hust/game/
+│           ├── Main.java     # Khởi chạy game
+│           ├── core/         # Singleton GameManager điều phối game
+│           ├── models/       # Thực thể (Player, Enemy) và Vật phẩm
+│           ├── maps/         # Logic xử lý riêng cho từng bản đồ
+│           └── ui/           # Giao diện người dùng (Panels, Windows)
+└── README.md
 ```
 
 ## Đội ngũ phát triển
 
-- **B21DCPT102** - [Vũ Tộc]
-
-## Đóng góp
-
-[Đang cập nhật...]
+- **Han2104** - [Chronicles of HUST Team]
 
 ## Giấy phép
 

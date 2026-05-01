@@ -15,7 +15,10 @@
     </properties>
 
     <build>
+<<<<<<< HEAD
         <sourceDirectory>src</sourceDirectory>
+=======
+>>>>>>> test
         <resources>
             <resource>
                 <directory>assets</directory>
