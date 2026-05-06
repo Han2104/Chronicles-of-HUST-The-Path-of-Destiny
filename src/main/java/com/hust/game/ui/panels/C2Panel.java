@@ -25,12 +25,12 @@ public class C2Panel extends JPanel {
     private JButton btnShop;
     
     // Tọa độ nhân vật Vũ (Tỉ lệ 1000x650)
-    private int playerX = 500;
-    private int playerY = 550;
+    private int playerX = 250;
+    private int playerY = 480;
     private final int playerSpeed = 15;
     
-    private final double BASE_W = 1000.0;
-    private final double BASE_H = 650.0;
+    private final double BASE_W = 500.0;
+    private final double BASE_H = 550.0;
 
     public C2Panel(GameWindow window, StatsPanel statsPanel) {
         this.window = window;

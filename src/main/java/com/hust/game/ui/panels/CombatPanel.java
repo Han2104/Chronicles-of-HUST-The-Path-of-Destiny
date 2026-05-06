@@ -38,8 +38,24 @@ public class CombatPanel extends JPanel {
 
     public void startCombat(Boss boss) {
         this.currentBoss = boss;
+        // lấy thông tin từ player
+        com.hust.game.models.entities.Player p = com.hust.game.core.GameManager.getInstance().getPlayer();
         bossHPBar.setMaximum(boss.maxHp);
         bossHPBar.setValue(boss.hp);
+        // Xử lý logic NERF chỉ số cho Player
+        int maxHP = p.getMaxHpCombat();
+        int currentHP = p.getHp();
+        String nerfNotice = "";
+
+        if (p.getDisciplineScore() < 50) 
+        // Giảm 20% chỉ số HP theo quy định GDD 2.2
+        maxHP = (int) (maxHP * 0.8);
+        currentHP = (int) (currentHP * 0.8);
+        nerfNotice = "\n⚠️ CẢNH BÁO: Điểm rèn luyện thấp (<50)! Chỉ số bị giảm 20%.";
+        JOptionPane.showMessageDialog(this, 
+            "Hệ thống ghi nhận Điểm rèn luyện của bạn dưới 50!\n" +
+            "Toàn bộ chỉ số sức mạnh và máu bị giảm 20% trong trận chiến này.", 
+            "CẢNH BÁO KỶ LUẬT", JOptionPane.WARNING_MESSAGE);
         playerHPBar.setMaximum(GameManager.getInstance().getPlayer().getMaxHpCombat());
         playerHPBar.setValue(GameManager.getInstance().getPlayer().getHp());
         combatLog.setText("--- TRẬN CHIẾN BẮT ĐẦU ---\nĐối mặt với: " + boss.name + "\n" + boss.description + "\n");
@@ -122,19 +138,32 @@ public class CombatPanel extends JPanel {
     }
 
     private void playerTurn() {
-        // Logic trả lời câu hỏi sẽ được tích hợp ở đây
-        int damage = 30 + GameManager.getInstance().getPlayer().getSolutionSkill() / 2;
-        currentBoss.hp -= damage;
-        bossHPBar.setValue(currentBoss.hp);
-        log("Vũ tung đòn 'Kiến thức là sức mạnh'! Gây " + damage + " sát thương.");
+    // --- PHẦN BỔ SUNG: KIỂM TRA ĐIỂM RÈN LUYỆN ĐỂ NERF SÁT THƯƠNG ---
+    com.hust.game.models.entities.Player p = com.hust.game.core.GameManager.getInstance().getPlayer();
+    int currentSkill = p.getSolutionSkill();
 
-        if (currentBoss.hp <= 0) {
-            log("CHIẾN THẮNG! " + currentBoss.name + " đã bị thuyết phục.");
-            JOptionPane.showMessageDialog(this, "Bạn đã chiến thắng Boss!");
-            window.showPanel("MAP_B1");
-        } else {
-            bossTurn();
-        }
+    // Nếu Điểm rèn luyện < 50, giảm 20% hiệu quả của Solution Skill theo GDD
+    if (p.getDisciplineScore() < 50) {
+        currentSkill = (int) (currentSkill * 0.8);
+        log("⚠️ Do kỷ luật thấp (<50), sức mạnh đòn đánh bị giảm 20%!");
+    }
+    // ----------------------------------------------------------------
+
+    // Logic tính sát thương dựa trên chỉ số đã qua xử lý
+    int damage = 30 + currentSkill / 2;
+    
+    currentBoss.hp -= damage;
+    bossHPBar.setValue(currentBoss.hp);
+    log("Vũ tung đòn 'Kiến thức là sức mạnh'! Gây " + damage + " sát thương.");
+
+    if (currentBoss.hp <= 0) {
+        log("CHIẾN THẮNG! " + currentBoss.name + " đã bị thuyết phục.");
+        JOptionPane.showMessageDialog(this, "Bạn đã chiến thắng Boss!");
+        window.showPanel("MAP_B1");
+    } 
+    else {
+        bossTurn();
+    }
     }
 
     private void bossTurn() {
