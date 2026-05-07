@@ -26,7 +26,7 @@ public class C2Panel extends JPanel {
     
     // Tọa độ nhân vật Vũ (Tỉ lệ 1000x650)
     private int playerX = 250;
-    private int playerY = 480;
+    private int playerY = 460;
     private final int playerSpeed = 15;
     
     private final double BASE_W = 500.0;
@@ -84,7 +84,7 @@ public class C2Panel extends JPanel {
         // 4. Nút Cửa hàng C2 (Tòa Shop bên phải)
         btnShop = createTransparentButton("Cửa hàng C2", "Đến gần tòa Shop để mua đồ");
         btnShop.addActionListener(e -> {
-            if (isPlayerNear(620, 150, 350, 300)) {
+            if (isPlayerNear(380, 100, 100, 120)) {
                 ShopDialog dialog = new ShopDialog((Frame) SwingUtilities.getWindowAncestor(this), statsPanel);
                 dialog.setVisible(true);
             } else {
@@ -118,12 +118,48 @@ public class C2Panel extends JPanel {
         am.put("moveRight", new AbstractAction() { public void actionPerformed(java.awt.event.ActionEvent e) { movePlayer(playerSpeed, 0, 2); } });
     }
 
+    // private void movePlayer(int dx, int dy, int dir) {
+    //     this.currentDir = dir;
+    //     playerX = Math.max(20, Math.min(480, playerX + dx));
+    //     playerY = Math.max(50, Math.min(500, playerY + dy));
+    //     repaint();
+    // }
     private void movePlayer(int dx, int dy, int dir) {
-        this.currentDir = dir;
-        playerX = Math.max(50, Math.min(950, playerX + dx));
-        playerY = Math.max(100, Math.min(600, playerY + dy));
+    this.currentDir = dir;
+    
+    // Tính toán vị trí dự định mới
+    int nextX = playerX + dx;
+    int nextY = playerY + dy;
+
+    // --- LOGIC GIỚI HẠN VÙNG ĐẤT (COLLISION) ---
+    // 1. Giới hạn khung hình chung (Tránh mất hút nhân vật)
+    if (nextX < 20 || nextX > 480 || nextY < 50 || nextY > 520) {
+        return; 
+    }
+
+    // 2. Logic Bo tròn theo hòn đảo (Vùng mây ở 4 góc)
+    // Càng ra biên trái/phải (X nhỏ hoặc X lớn), Y không được quá thấp (xuống mây)
+    boolean isOnLand = true;
+
+    // Chặn góc dưới bên trái (Vùng mây phía dưới nhân vật áo đỏ)
+    if (nextX < 150 && nextY > 450) isOnLand = false;
+    
+    // Chặn góc dưới bên phải (Vùng mây phía dưới cây bên phải)
+    if (nextX > 350 && nextY > 450) isOnLand = false;
+
+    // Chặn góc trên (Tránh đi xuyên lên trời sau mái nhà)
+    if (nextY < 120) {
+        // Chỉ cho phép đi ở khu vực có tòa nhà
+        if (nextX < 100 || nextX > 400) isOnLand = false;
+    }
+
+    // Nếu vị trí mới nằm trên đất thì mới cập nhật tọa độ
+    if (isOnLand) {
+        playerX = nextX;
+        playerY = nextY;
         repaint();
     }
+}
 
     private boolean isPlayerNear(int x, int y, int w, int h) {
         // Kiểm tra xem tâm nhân vật có nằm gần vùng tương tác không
@@ -153,13 +189,13 @@ public class C2Panel extends JPanel {
         
         // Cập nhật vị trí Hotspot dựa trên ảnh thực tế của User
         // Tòa Bách Khoa (Check-in) - Nằm phía trên bên trái/giữa
-        btnCheckIn.setBounds((int)(350 * scaleX), (int)(100 * scaleY), (int)(250 * scaleX), (int)(200 * scaleY));
+        btnCheckIn.setBounds((int)(200 * scaleX), (int)(50 * scaleY), (int)(120 * scaleX), (int)(100 * scaleY));
         
         // Khu vực làm thêm (Sân cỏ/Ghế đá bên trái)
-        btnWork.setBounds((int)(50 * scaleX), (int)(400 * scaleY), (int)(350 * scaleX), (int)(250 * scaleY));
+        btnWork.setBounds((int)(50 * scaleX), (int)(350 * scaleY), (int)(350 * scaleX), (int)(250 * scaleY));
         
         // Tòa Shop (Cửa hàng) - Nằm phía trên bên phải
-        btnShop.setBounds((int)(650 * scaleX), (int)(150 * scaleY), (int)(300 * scaleX), (int)(250 * scaleY));
+        btnShop.setBounds((int)(330 * scaleX), (int)(130 * scaleY), (int)(100 * scaleX), (int)(160 * scaleY));
         
         revalidate();
         repaint();
