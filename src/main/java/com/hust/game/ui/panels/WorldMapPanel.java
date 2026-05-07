@@ -6,6 +6,7 @@ import com.hust.game.core.GameManager;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionListener;
 import java.io.File;
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
@@ -21,8 +22,9 @@ public class WorldMapPanel extends JPanel {
     private StatsPanel statsPanel;
     private final List<ButtonInfo> mapButtons = new ArrayList<>();
     
-    private final double BASE_W = 1000.0;
-    private final double BASE_H = 650.0;
+    // Dùng kích thước ảnh gốc để tính hitbox theo tỷ lệ
+    private final double BASE_W = 2976.0;
+    private final double BASE_H = 1438.0;
 
     private static class ButtonInfo {
         JButton btn;
@@ -36,7 +38,7 @@ public class WorldMapPanel extends JPanel {
         this.window = window;
         this.statsPanel = statsPanel;
         
-        setLayout(null); 
+        setLayout(null);
 
         try {
             backgroundImage = ImageIO.read(new File("assets/world_map.png"));
@@ -44,12 +46,13 @@ public class WorldMapPanel extends JPanel {
             System.err.println("❌ Lỗi: Không tìm thấy ảnh assets/world_map.png.");
         }
 
-        // Tạo các điểm đến dựa trên ảnh "Đảo nổi" của User (1000x650)
-        createIslandButton("Sơn La (Vùng núi)", 120, 50, 250, 300, "MAP_SONLA", 1);
-        createIslandButton("Tòa C2", 420, 50, 180, 180, "MAP_C2", 2);
-        createIslandButton("B1 (Arena)", 680, 30, 280, 250, "MAP_B1", 4);
-        createIslandButton("Thư viện Tạ Quang Bửu", 100, 550, 300, 250, "MAP_LIBRARY", 5);
-        createIslandButton("D9 (Giảng đường)", 600, 450, 280, 250, "MAP_D9", 3);
+        // Tạo các hotspot cho bản đồ 2D pixel art mới
+        createRegionButton("Sơn La Origin Zone", 150, 72, 982, 532, e -> openMap1());
+        createRegionButton("C2 Discipline Zone", 1786, 72, 1042, 532, e -> openMap2());
+        createRegionButton("B1 Đấu Trường Huyền Thoại", 150, 604, 1101, 719, e -> openMap4());
+        createRegionButton("D9 Mê Cung Học Thuật", 1620, 604, 980, 760, e -> openMap3());
+        createRegionButton("JOB - Vị Thế Quyền Lực", 1320, 430, 350, 500, e -> openJobTreasure());
+        createRegionButton("Xe khách lên Hà Nội", 2600, 1080, 320, 300, e -> showBusIconInfo());
 
         this.addComponentListener(new java.awt.event.ComponentAdapter() {
             @Override
@@ -59,7 +62,7 @@ public class WorldMapPanel extends JPanel {
         });
     }
 
-    private void createIslandButton(String name, int x, int y, int w, int h, String cardName, int mapID) {
+    private void createRegionButton(String name, int x, int y, int w, int h, ActionListener action) {
         JButton btn = new JButton(name);
         btn.setFont(new Font("Arial", Font.BOLD, 14));
         btn.setForeground(new Color(255, 255, 255, 0)); // Tàng hình mặc định
@@ -79,43 +82,92 @@ public class WorldMapPanel extends JPanel {
             }
         });
 
-        btn.addActionListener(e -> {
-            Player player = GameManager.getInstance().getPlayer();
-            if (mapID == 1) {
-                window.showPanel(cardName);
-                GameManager.getInstance().switchMap(1);
-            } else if (mapID == 2) {
-                if (player.isCompletedMap1()) {
-                    window.showPanel(cardName);
-                    GameManager.getInstance().switchMap(2);
-                } else if (player.getFinance() >= 1) {
-                    int choice = JOptionPane.showConfirmDialog(this, 
-                        "Dùng 1 VNĐ để mở khóa vĩnh viễn Tòa C2?", "Mở khóa Bản đồ", JOptionPane.YES_NO_OPTION);
-                    if (choice == JOptionPane.YES_OPTION) {
-                        player.addFinance(-1);
-                        player.setCompletedMap1(true);
-                        window.showPanel(cardName);
-                        GameManager.getInstance().switchMap(2);
-                    }
-                } else {
-                    JOptionPane.showMessageDialog(this, "Bạn cần 1 VNĐ (kiếm tại Sơn la) để xuống Hà Nội học C2!");
-                }
-            } else if (mapID == 3) {
-                // Chuyển đến Map D9
-                window.showPanel(cardName);
-                GameManager.getInstance().switchMap(3);
-            } else if (mapID == 4) {
-                // Chuyển đến Map B1 (Arena)
-                window.showPanel(cardName);
-                GameManager.getInstance().switchMap(4);
-            } else {
-                JOptionPane.showMessageDialog(this, "Khu vực " + name + " đang phát triển!");
-            }
-            statsPanel.updateStats();
-        });
-
+        btn.addActionListener(action);
         mapButtons.add(new ButtonInfo(btn, x, y, w, h));
         add(btn);
+    }
+
+    private void openMap1() {
+        window.showPanel("MAP_SONLA");
+        GameManager.getInstance().switchMap(1);
+        statsPanel.updateStats();
+    }
+
+    private void openMap2() {
+        Player player = GameManager.getInstance().getPlayer();
+        if (player.isCompletedMap1()) {
+            window.showPanel("MAP_C2");
+            GameManager.getInstance().switchMap(2);
+        } else if (player.getFinance() >= 1) {
+            int choice = JOptionPane.showConfirmDialog(this,
+                    "Dùng 1 VNĐ để mở khóa vĩnh viễn C2?", "Mở khóa Bản đồ", JOptionPane.YES_NO_OPTION);
+            if (choice == JOptionPane.YES_OPTION) {
+                player.addFinance(-1);
+                player.setCompletedMap1(true);
+                window.showPanel("MAP_C2");
+                GameManager.getInstance().switchMap(2);
+            }
+        } else {
+            JOptionPane.showMessageDialog(this,
+                    "C2 đang khóa. Bạn cần 1 VNĐ để mua vé hoặc hoàn thành Sơn La trước.");
+        }
+        statsPanel.updateStats();
+    }
+
+    private void openMap3() {
+        Player player = GameManager.getInstance().getPlayer();
+        if (player.isCompletedMap2() && player.getDisciplineScore() >= 80) {
+            window.showPanel("MAP_D9");
+            GameManager.getInstance().switchMap(3);
+        } else if (!player.isCompletedMap2()) {
+            JOptionPane.showMessageDialog(this,
+                    "D9 đang khóa. Bạn cần hoàn thành C2 trước khi vào Mê Cung D9.");
+        } else {
+            JOptionPane.showMessageDialog(this,
+                    "D9 đang khóa. Bạn cần đạt ít nhất 80 Điểm Kỷ luật để mở D9.");
+        }
+        statsPanel.updateStats();
+    }
+
+    private void openMap4() {
+        Player player = GameManager.getInstance().getPlayer();
+        if (player.getCurrentD9Floor() >= 7) {
+            window.showPanel("MAP_B1");
+            GameManager.getInstance().switchMap(4);
+        } else {
+            JOptionPane.showMessageDialog(this,
+                    "B1 đang khóa. Bạn cần vượt qua tầng 7 của D9 để mở Đấu Trường Huyền Thoại.");
+        }
+        statsPanel.updateStats();
+    }
+
+    private void openJobTreasure() {
+        Player player = GameManager.getInstance().getPlayer();
+        boolean unlocked = player.isCompletedMap1() && player.isCompletedMap2() && player.getCurrentD9Floor() >= 7;
+        if (unlocked) {
+            JOptionPane.showMessageDialog(this,
+                    "Bạn đã mở khóa JOB - Vị Thế Quyền Lực!\nHoàn thành B1 Boss Cuối để tiến tới kết thúc cuối cùng.",
+                    "JOB - Vị Thế Quyền Lực", JOptionPane.INFORMATION_MESSAGE);
+        } else {
+            StringBuilder message = new StringBuilder("Để tiếp cận JOB, bạn cần hoàn thành các bước sau:\n");
+            if (!player.isCompletedMap1()) {
+                message.append("- Hoàn thành Sơn La Origin Zone\n");
+            }
+            if (!player.isCompletedMap2()) {
+                message.append("- Hoàn thành C2 Discipline Zone và D9 Mê Cung Học Thuật\n");
+            }
+            if (player.getCurrentD9Floor() < 7) {
+                message.append("- Vượt qua Tầng 7 của D9\n");
+            }
+            message.append("\nHãy tiếp tục hành trình để giành lấy JOB và vị thế quyền lực!");
+            JOptionPane.showMessageDialog(this, message.toString(), "JOB - Vị Thế Quyền Lực", JOptionPane.INFORMATION_MESSAGE);
+        }
+    }
+
+    private void showBusIconInfo() {
+        JOptionPane.showMessageDialog(this,
+                "Xe khách lên Hà Nội. Nếu chưa có logic riêng, đây là biểu tượng trang trí.",
+                "Xe khách", JOptionPane.INFORMATION_MESSAGE);
     }
 
     private void repositionComponents() {
