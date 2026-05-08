@@ -4,11 +4,10 @@ import com.hust.game.ui.GameWindow;
 import com.hust.game.models.entities.Player;
 import com.hust.game.models.combat.Boss;
 import com.hust.game.core.GameManager;
+import com.hust.game.util.AssetLoader;
 
 import javax.swing.*;
 import java.awt.*;
-import java.io.File;
-import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 
 public class CombatPanel extends JPanel {
@@ -26,12 +25,7 @@ public class CombatPanel extends JPanel {
         setLayout(new BorderLayout());
         setBackground(new Color(30, 30, 30));
 
-        // Load Boss Image
-        try {
-            bossImage = ImageIO.read(new File("assets/boss.png"));
-        } catch (Exception e) {
-            System.err.println("❌ Lỗi: Không tìm thấy assets/boss.png");
-        }
+        bossImage = AssetLoader.loadImage("assets/boss.png");
 
         setupUI();
     }

@@ -2,11 +2,10 @@ package com.hust.game.ui.panels;
 
 import com.hust.game.core.GameManager;
 import com.hust.game.ui.GameWindow;
+import com.hust.game.util.AssetLoader;
 
 import javax.swing.*;
 import java.awt.*;
-import java.io.File;
-import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 
 /**
@@ -39,18 +38,11 @@ public class C2Panel extends JPanel {
         setLayout(null); 
         setFocusable(true);
 
-        try {
-            backgroundImage = ImageIO.read(new File("assets/c2_map.png"));
-            
-            // Nạp từng ảnh từ thư mục assets/Vu/ (Lưu ý chữ V viết hoa)
-            playerSprites[0] = ImageIO.read(new File("assets/Vu/character_stand_front (1).png")); // Down
-            playerSprites[1] = ImageIO.read(new File("assets/Vu/character_stand_left (1).png"));  // Left
-            playerSprites[2] = ImageIO.read(new File("assets/Vu/character_stand_right (1).png")); // Right
-            playerSprites[3] = ImageIO.read(new File("assets/Vu/character_stand_back (1).png"));  // Up
-            
-        } catch (Exception e) {
-            System.err.println("❌ Lỗi: Không tìm thấy ảnh trong assets/Vu/. Hãy kiểm tra lại tên tệp.");
-        }
+        backgroundImage = AssetLoader.loadImage("assets/c2_map.png");
+        playerSprites[0] = AssetLoader.loadImage("assets/Vu/character_stand_front (1).png"); // Down
+        playerSprites[1] = AssetLoader.loadImage("assets/Vu/character_stand_left (1).png");  // Left
+        playerSprites[2] = AssetLoader.loadImage("assets/Vu/character_stand_right (1).png"); // Right
+        playerSprites[3] = AssetLoader.loadImage("assets/Vu/character_stand_back (1).png");  // Up
         
         // ... (Giữ nguyên các nút bấm)
 

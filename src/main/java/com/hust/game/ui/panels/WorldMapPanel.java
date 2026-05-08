@@ -1,14 +1,12 @@
 package com.hust.game.ui.panels;
 
 import com.hust.game.ui.GameWindow;
-import com.hust.game.models.entities.Player;
 import com.hust.game.core.GameManager;
+import com.hust.game.util.AssetLoader;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionListener;
-import java.io.File;
-import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.List;
@@ -40,11 +38,7 @@ public class WorldMapPanel extends JPanel {
         
         setLayout(null);
 
-        try {
-            backgroundImage = ImageIO.read(new File("assets/world_map.png"));
-        } catch (Exception e) {
-            System.err.println("❌ Lỗi: Không tìm thấy ảnh assets/world_map.png.");
-        }
+        backgroundImage = AssetLoader.loadImage("assets/world_map.png");
 
         // Tạo các hotspot cho bản đồ 2D pixel art mới
         createRegionButton("Sơn La Origin Zone", 150, 72, 982, 532, e -> openMap1());
@@ -62,6 +56,12 @@ public class WorldMapPanel extends JPanel {
         });
     }
 
+    @Override
+    public void addNotify() {
+        super.addNotify();
+        SwingUtilities.invokeLater(this::repositionComponents);
+    }
+
     private void createRegionButton(String name, int x, int y, int w, int h, ActionListener action) {
         JButton btn = new JButton(name);
         btn.setFont(new Font("Arial", Font.BOLD, 14));
@@ -72,6 +72,7 @@ public class WorldMapPanel extends JPanel {
         btn.setFocusPainted(false);
         btn.setCursor(new Cursor(Cursor.HAND_CURSOR));
         btn.setToolTipText(name);
+        btn.setEnabled(true);
 
         btn.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseEntered(java.awt.event.MouseEvent e) {
@@ -88,80 +89,37 @@ public class WorldMapPanel extends JPanel {
     }
 
     private void openMap1() {
+        System.out.println("[Navigation] Opening SonLa");
         window.showPanel("MAP_SONLA");
         GameManager.getInstance().switchMap(1);
         statsPanel.updateStats();
     }
 
     private void openMap2() {
-        Player player = GameManager.getInstance().getPlayer();
-        if (player.isCompletedMap1()) {
-            window.showPanel("MAP_C2");
-            GameManager.getInstance().switchMap(2);
-        } else if (player.getFinance() >= 1) {
-            int choice = JOptionPane.showConfirmDialog(this,
-                    "Dùng 1 VNĐ để mở khóa vĩnh viễn C2?", "Mở khóa Bản đồ", JOptionPane.YES_NO_OPTION);
-            if (choice == JOptionPane.YES_OPTION) {
-                player.addFinance(-1);
-                player.setCompletedMap1(true);
-                window.showPanel("MAP_C2");
-                GameManager.getInstance().switchMap(2);
-            }
-        } else {
-            JOptionPane.showMessageDialog(this,
-                    "C2 đang khóa. Bạn cần 1 VNĐ để mua vé hoặc hoàn thành Sơn La trước.");
-        }
+        System.out.println("[Navigation] Opening C2");
+        window.showPanel("MAP_C2");
+        GameManager.getInstance().switchMap(2);
         statsPanel.updateStats();
     }
 
     private void openMap3() {
-        Player player = GameManager.getInstance().getPlayer();
-        if (player.isCompletedMap2() && player.getDisciplineScore() >= 80) {
-            window.showPanel("MAP_D9");
-            GameManager.getInstance().switchMap(3);
-        } else if (!player.isCompletedMap2()) {
-            JOptionPane.showMessageDialog(this,
-                    "D9 đang khóa. Bạn cần hoàn thành C2 trước khi vào Mê Cung D9.");
-        } else {
-            JOptionPane.showMessageDialog(this,
-                    "D9 đang khóa. Bạn cần đạt ít nhất 80 Điểm Kỷ luật để mở D9.");
-        }
+        System.out.println("[Navigation] Opening D9");
+        window.showPanel("MAP_D9");
+        GameManager.getInstance().switchMap(3);
         statsPanel.updateStats();
     }
 
     private void openMap4() {
-        Player player = GameManager.getInstance().getPlayer();
-        if (player.getCurrentD9Floor() >= 7) {
-            window.showPanel("MAP_B1");
-            GameManager.getInstance().switchMap(4);
-        } else {
-            JOptionPane.showMessageDialog(this,
-                    "B1 đang khóa. Bạn cần vượt qua tầng 7 của D9 để mở Đấu Trường Huyền Thoại.");
-        }
+        System.out.println("[Navigation] Opening B1");
+        window.showPanel("MAP_B1");
+        GameManager.getInstance().switchMap(4);
         statsPanel.updateStats();
     }
 
     private void openJobTreasure() {
-        Player player = GameManager.getInstance().getPlayer();
-        boolean unlocked = player.isCompletedMap1() && player.isCompletedMap2() && player.getCurrentD9Floor() >= 7;
-        if (unlocked) {
-            JOptionPane.showMessageDialog(this,
-                    "Bạn đã mở khóa JOB - Vị Thế Quyền Lực!\nHoàn thành B1 Boss Cuối để tiến tới kết thúc cuối cùng.",
-                    "JOB - Vị Thế Quyền Lực", JOptionPane.INFORMATION_MESSAGE);
-        } else {
-            StringBuilder message = new StringBuilder("Để tiếp cận JOB, bạn cần hoàn thành các bước sau:\n");
-            if (!player.isCompletedMap1()) {
-                message.append("- Hoàn thành Sơn La Origin Zone\n");
-            }
-            if (!player.isCompletedMap2()) {
-                message.append("- Hoàn thành C2 Discipline Zone và D9 Mê Cung Học Thuật\n");
-            }
-            if (player.getCurrentD9Floor() < 7) {
-                message.append("- Vượt qua Tầng 7 của D9\n");
-            }
-            message.append("\nHãy tiếp tục hành trình để giành lấy JOB và vị thế quyền lực!");
-            JOptionPane.showMessageDialog(this, message.toString(), "JOB - Vị Thế Quyền Lực", JOptionPane.INFORMATION_MESSAGE);
-        }
+        JOptionPane.showMessageDialog(this,
+                "JOB - Vị Thế Quyền Lực hiện là khu vực thông tin, không chặn quyền vào các bản đồ chính.",
+                "JOB - Vị Thế Quyền Lực", JOptionPane.INFORMATION_MESSAGE);
     }
 
     private void showBusIconInfo() {

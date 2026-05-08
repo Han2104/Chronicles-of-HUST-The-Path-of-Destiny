@@ -7,6 +7,8 @@ import com.hust.game.ui.panels.C2Panel;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * GameWindow - Cửa sổ chính điều phối giao diện sử dụng CardLayout.
@@ -16,6 +18,8 @@ public class GameWindow extends JFrame {
     private JPanel mainContainer;
     private CardLayout cardLayout;
     private com.hust.game.ui.panels.CombatPanel combatPanel;
+    private final Map<String, JComponent> panels = new HashMap<>();
+    private String currentPanelName;
 
     public GameWindow() {
         setTitle("Chronicles of HUST - Vũ Em Đi Học");
@@ -44,15 +48,15 @@ public class GameWindow extends JFrame {
         com.hust.game.ui.panels.ArenaPanel arenaPanel = new com.hust.game.ui.panels.ArenaPanel(this, statsPanel);
         this.combatPanel = new com.hust.game.ui.panels.CombatPanel(this, statsPanel);
 
-        mainContainer.add(worldMapPanel, "WORLD_MAP");
-        mainContainer.add(farmingPanel, "MAP_SONLA");
-        mainContainer.add(c2Panel, "MAP_C2");
-        mainContainer.add(d9Panel, "MAP_D9");
-        mainContainer.add(arenaPanel, "MAP_B1");
-        mainContainer.add(combatPanel, "COMBAT_SCREEN");
+        registerPanel("WORLD_MAP", worldMapPanel);
+        registerPanel("MAP_SONLA", farmingPanel);
+        registerPanel("MAP_C2", c2Panel);
+        registerPanel("MAP_D9", d9Panel);
+        registerPanel("MAP_B1", arenaPanel);
+        registerPanel("COMBAT_SCREEN", combatPanel);
         
         // Tạm thời để MAP_LIBRARY trỏ về D9 hoặc tạo panel mới nếu cần
-        mainContainer.add(new JPanel(), "MAP_LIBRARY"); 
+        registerPanel("MAP_LIBRARY", new JPanel());
 
         add(mainContainer, BorderLayout.CENTER);
 
@@ -60,8 +64,35 @@ public class GameWindow extends JFrame {
         setVisible(true);
     }
 
+    private void registerPanel(String name, JComponent panel) {
+        panel.setName(name);
+        panels.put(name, panel);
+        mainContainer.add(panel, name);
+    }
+
     public void showPanel(String name) {
+        if (currentPanelName != null && !currentPanelName.equals(name)) {
+            JComponent previousPanel = panels.get(currentPanelName);
+            if (previousPanel instanceof com.hust.game.ui.panels.D9Panel) {
+                ((com.hust.game.ui.panels.D9Panel) previousPanel).onHidden();
+            }
+        }
+
+        if ("MAP_D9".equals(name)) {
+            System.out.println("[Navigation] Switching to panel: D9");
+        } else {
+            System.out.println("[Navigation] Switching to panel: " + name);
+        }
         cardLayout.show(mainContainer, name);
+        currentPanelName = name;
+
+        JComponent panel = panels.get(name);
+        if (panel instanceof com.hust.game.ui.panels.D9Panel) {
+            ((com.hust.game.ui.panels.D9Panel) panel).onShown();
+            SwingUtilities.invokeLater(panel::requestFocusInWindow);
+        } else if (panel != null) {
+            panel.requestFocusInWindow();
+        }
     }
 
     public com.hust.game.ui.panels.CombatPanel getCombatPanel() {
