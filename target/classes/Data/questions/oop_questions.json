@@ -1,0 +1,1487 @@
+{
+  "oop_floor_1": [
+    {
+      "id": "f1_q001",
+      "topic": "Class & Object",
+      "difficulty": "easy",
+      "question": "Trong Java, class được hiểu đúng nhất là gì?",
+      "options": [
+        "Một bản thiết kế để tạo object",
+        "Một biến nguyên thủy",
+        "Một câu lệnh lặp",
+        "Một file ảnh trong game"
+      ],
+      "answerIndex": 0,
+      "explanation": "Class là khuôn mẫu/bản thiết kế định nghĩa thuộc tính và hành vi để tạo ra object."
+    },
+    {
+      "id": "f1_q002",
+      "topic": "Class & Object",
+      "difficulty": "easy",
+      "question": "Để tạo một object từ class, ta sử dụng từ khóa nào?",
+      "options": [
+        "class",
+        "new",
+        "object",
+        "create"
+      ],
+      "answerIndex": 1,
+      "explanation": "Từ khóa 'new' được dùng để tạo instance của class."
+    },
+    {
+      "id": "f1_q003",
+      "topic": "Class & Object",
+      "difficulty": "medium",
+      "question": "Trong Java, object là gì?",
+      "options": [
+        "Một bản sao của class",
+        "Một biến lưu giá trị số",
+        "Một phương thức tính toán",
+        "Một loại vòng lặp"
+      ],
+      "answerIndex": 0,
+      "explanation": "Object là instance của class, chứa dữ liệu và hành vi cụ thể."
+    },
+    {
+      "id": "f1_q004",
+      "topic": "Class & Object",
+      "difficulty": "medium",
+      "question": "Cú pháp khai báo class trong Java là gì?",
+      "options": [
+        "class ClassName { }",
+        "ClassName class { }",
+        "new class ClassName { }",
+        "object ClassName { }"
+      ],
+      "answerIndex": 0,
+      "explanation": "Cú pháp đúng là 'class ClassName { ... }'."
+    },
+    {
+      "id": "f1_q005",
+      "topic": "Class & Object",
+      "difficulty": "easy",
+      "question": "Trong Java, constructor dùng để làm gì?",
+      "options": [
+        "Khởi tạo object",
+        "Tính toán số học",
+        "Vẽ giao diện",
+        "Đọc file"
+      ],
+      "answerIndex": 0,
+      "explanation": "Constructor được gọi khi tạo object để khởi tạo giá trị ban đầu."
+    },
+    {
+      "id": "f1_q006",
+      "topic": "Class & Object",
+      "difficulty": "medium",
+      "question": "Phương thức nào được gọi tự động khi tạo object?",
+      "options": [
+        "main()",
+        "Constructor",
+        "toString()",
+        "equals()"
+      ],
+      "answerIndex": 1,
+      "explanation": "Constructor được gọi tự động khi dùng 'new'."
+    },
+    {
+      "id": "f1_q007",
+      "topic": "Class & Object",
+      "difficulty": "easy",
+      "question": "Trong Java, 'this' keyword dùng để tham chiếu đến?",
+      "options": [
+        "Class hiện tại",
+        "Object hiện tại",
+        "Phương thức static",
+        "Biến global"
+      ],
+      "answerIndex": 1,
+      "explanation": "'this' tham chiếu đến object hiện tại đang gọi phương thức."
+    },
+    {
+      "id": "f1_q008",
+      "topic": "Class & Object",
+      "difficulty": "medium",
+      "question": "Sự khác biệt giữa class và object là gì?",
+      "options": [
+        "Class là bản thiết kế, object là instance",
+        "Class lưu dữ liệu, object lưu code",
+        "Class là biến, object là hằng số",
+        "Không có sự khác biệt"
+      ],
+      "answerIndex": 0,
+      "explanation": "Class định nghĩa cấu trúc, object là thực thể cụ thể."
+    },
+    {
+      "id": "f1_q009",
+      "topic": "Class & Object",
+      "difficulty": "easy",
+      "question": "Trong Java, phương thức instance thuộc về?",
+      "options": [
+        "Class",
+        "Object",
+        "Cả class và object",
+        "Chỉ static method"
+      ],
+      "answerIndex": 1,
+      "explanation": "Instance method được gọi trên object cụ thể."
+    },
+    {
+      "id": "f1_q010",
+      "topic": "Class & Object",
+      "difficulty": "medium",
+      "question": "Khi nào constructor được gọi?",
+      "options": [
+        "Khi compile code",
+        "Khi tạo object bằng new",
+        "Khi gọi phương thức",
+        "Khi debug chương trình"
+      ],
+      "answerIndex": 1,
+      "explanation": "Constructor được gọi trong quá trình instantiation."
+    },
+    {
+      "id": "f1_q011",
+      "topic": "Class & Object",
+      "difficulty": "easy",
+      "question": "Trong Java, object có thể có nhiều?",
+      "options": [
+        "Không thể",
+        "Chỉ một",
+        "Nhiều object từ cùng class",
+        "Chỉ trong array"
+      ],
+      "answerIndex": 2,
+      "explanation": "Một class có thể tạo nhiều object khác nhau."
+    },
+    {
+      "id": "f1_q012",
+      "topic": "Class & Object",
+      "difficulty": "medium",
+      "question": "Phương thức nào không cần object để gọi?",
+      "options": [
+        "Instance method",
+        "Static method",
+        "Constructor",
+        "Getter method"
+      ],
+      "answerIndex": 1,
+      "explanation": "Static method được gọi trực tiếp từ class."
+    },
+    {
+      "id": "f1_q013",
+      "topic": "Class & Object",
+      "difficulty": "easy",
+      "question": "Trong Java, class có thể chứa?",
+      "options": [
+        "Chỉ biến",
+        "Chỉ phương thức",
+        "Cả biến và phương thức",
+        "Chỉ constructor"
+      ],
+      "answerIndex": 2,
+      "explanation": "Class chứa fields (biến) và methods."
+    },
+    {
+      "id": "f1_q014",
+      "topic": "Class & Object",
+      "difficulty": "medium",
+      "question": "Sự khác biệt giữa local variable và instance variable?",
+      "options": [
+        "Local trong method, instance trong class",
+        "Local static, instance không static",
+        "Local có giá trị mặc định, instance không",
+        "Không có sự khác biệt"
+      ],
+      "answerIndex": 0,
+      "explanation": "Local variable trong method, instance variable trong class."
+    },
+    {
+      "id": "f1_q015",
+      "topic": "Class & Object",
+      "difficulty": "easy",
+      "question": "Trong Java, object được lưu ở đâu?",
+      "options": [
+        "Stack",
+        "Heap",
+        "CPU cache",
+        "Hard disk"
+      ],
+      "answerIndex": 1,
+      "explanation": "Object được tạo trên heap memory."
+    }
+  ],
+  "oop_floor_2": [
+    {
+      "id": "f2_q001",
+      "topic": "Encapsulation",
+      "difficulty": "easy",
+      "question": "Encapsulation trong OOP là gì?",
+      "options": [
+        "Ẩn dữ liệu và chỉ cho phép truy cập qua phương thức",
+        "Tạo nhiều class",
+        "Kế thừa từ class khác",
+        "Đa hình"
+      ],
+      "answerIndex": 0,
+      "explanation": "Encapsulation bảo vệ dữ liệu bằng cách ẩn implementation."
+    },
+    {
+      "id": "f2_q002",
+      "topic": "Encapsulation",
+      "difficulty": "easy",
+      "question": "Từ khóa nào dùng để ẩn field trong Java?",
+      "options": [
+        "public",
+        "protected",
+        "private",
+        "static"
+      ],
+      "answerIndex": 2,
+      "explanation": "private làm field chỉ truy cập trong class."
+    },
+    {
+      "id": "f2_q003",
+      "topic": "Encapsulation",
+      "difficulty": "medium",
+      "question": "Tại sao cần getter và setter?",
+      "options": [
+        "Để truy cập private field",
+        "Để tạo constructor",
+        "Để override method",
+        "Để implement interface"
+      ],
+      "answerIndex": 0,
+      "explanation": "Getter/setter cung cấp controlled access đến private fields."
+    },
+    {
+      "id": "f2_q004",
+      "topic": "Encapsulation",
+      "difficulty": "easy",
+      "question": "Access modifier mặc định trong Java là?",
+      "options": [
+        "public",
+        "protected",
+        "private",
+        "(package-private)",
+        "Không có mặc định"
+      ],
+      "answerIndex": 3,
+      "explanation": "Không có modifier là package-private."
+    },
+    {
+      "id": "f2_q005",
+      "topic": "Encapsulation",
+      "difficulty": "medium",
+      "question": "Sự khác biệt giữa public và private?",
+      "options": [
+        "Public truy cập mọi nơi, private chỉ trong class",
+        "Public cho method, private cho field",
+        "Public static, private instance",
+        "Không có sự khác biệt"
+      ],
+      "answerIndex": 0,
+      "explanation": "Public có access rộng, private hạn chế."
+    },
+    {
+      "id": "f2_q006",
+      "topic": "Encapsulation",
+      "difficulty": "easy",
+      "question": "Encapsulation giúp gì?",
+      "options": [
+        "Tăng bảo mật",
+        "Giảm performance",
+        "Tăng complexity",
+        "Giảm readability"
+      ],
+      "answerIndex": 0,
+      "explanation": "Encapsulation bảo vệ data integrity."
+    },
+    {
+      "id": "f2_q007",
+      "topic": "Encapsulation",
+      "difficulty": "medium",
+      "question": "Có thể truy cập private field từ class khác không?",
+      "options": [
+        "Có, bằng reflection",
+        "Không thể",
+        "Có, bằng inheritance",
+        "Có, bằng polymorphism"
+      ],
+      "answerIndex": 0,
+      "explanation": "Reflection có thể access private, nhưng không nên."
+    },
+    {
+      "id": "f2_q008",
+      "topic": "Encapsulation",
+      "difficulty": "easy",
+      "question": "Protected modifier cho phép access từ?",
+      "options": [
+        "Chỉ class hiện tại",
+        "Class hiện tại và subclass",
+        "Mọi nơi",
+        "Chỉ package"
+      ],
+      "answerIndex": 1,
+      "explanation": "Protected cho subclass và same package."
+    },
+    {
+      "id": "f2_q009",
+      "topic": "Encapsulation",
+      "difficulty": "medium",
+      "question": "Tại sao không nên dùng public fields?",
+      "options": [
+        "Vi phạm encapsulation",
+        "Làm code chậm",
+        "Không compile được",
+        "Không thể kế thừa"
+      ],
+      "answerIndex": 0,
+      "explanation": "Public fields phá vỡ data hiding."
+    },
+    {
+      "id": "f2_q010",
+      "topic": "Encapsulation",
+      "difficulty": "easy",
+      "question": "Setter method dùng để?",
+      "options": [
+        "Lấy giá trị field",
+        "Thiết lập giá trị field",
+        "Tạo object",
+        "So sánh object"
+      ],
+      "answerIndex": 1,
+      "explanation": "Setter gán giá trị cho field."
+    },
+    {
+      "id": "f2_q011",
+      "topic": "Encapsulation",
+      "difficulty": "medium",
+      "question": "Validation trong setter dùng để?",
+      "options": [
+        "Kiểm tra input hợp lệ",
+        "Tăng speed",
+        "Giảm memory",
+        "Tạo log"
+      ],
+      "answerIndex": 0,
+      "explanation": "Setter có thể validate trước khi set."
+    },
+    {
+      "id": "f2_q012",
+      "topic": "Encapsulation",
+      "difficulty": "easy",
+      "question": "Getter method trả về?",
+      "options": [
+        "Void",
+        "Giá trị field",
+        "Object mới",
+        "Exception"
+      ],
+      "answerIndex": 1,
+      "explanation": "Getter return giá trị của field."
+    },
+    {
+      "id": "f2_q013",
+      "topic": "Encapsulation",
+      "difficulty": "medium",
+      "question": "Encapsulation liên quan đến abstraction như thế nào?",
+      "options": [
+        "Encapsulation implement abstraction",
+        "Hoàn toàn khác nhau",
+        "Encapsulation thay thế abstraction",
+        "Abstraction là phần của encapsulation"
+      ],
+      "answerIndex": 0,
+      "explanation": "Encapsulation ẩn implementation, abstraction ẩn complexity."
+    },
+    {
+      "id": "f2_q014",
+      "topic": "Encapsulation",
+      "difficulty": "easy",
+      "question": "Trong Java, package-private access là?",
+      "options": [
+        "public",
+        "protected",
+        "private",
+        "Không có modifier"
+      ],
+      "answerIndex": 3,
+      "explanation": "Không có modifier = package-private."
+    },
+    {
+      "id": "f2_q015",
+      "topic": "Encapsulation",
+      "difficulty": "medium",
+      "question": "Sử dụng encapsulation tốt sẽ giúp?",
+      "options": [
+        "Dễ maintain và modify",
+        "Code chạy chậm hơn",
+        "Tăng coupling",
+        "Giảm reusability"
+      ],
+      "answerIndex": 0,
+      "explanation": "Encapsulation làm code flexible hơn."
+    }
+  ],
+  "oop_floor_3": [
+    {
+      "id": "f3_q001",
+      "topic": "Inheritance",
+      "difficulty": "easy",
+      "question": "Inheritance trong OOP cho phép?",
+      "options": [
+        "Tạo class mới từ class có sẵn",
+        "Ẩn dữ liệu",
+        "Đa hình",
+        "Tạo interface"
+      ],
+      "answerIndex": 0,
+      "explanation": "Inheritance cho phép subclass kế thừa từ superclass."
+    },
+    {
+      "id": "f3_q002",
+      "topic": "Inheritance",
+      "difficulty": "easy",
+      "question": "Từ khóa để kế thừa trong Java là?",
+      "options": [
+        "implements",
+        "extends",
+        "inherits",
+        "using"
+      ],
+      "answerIndex": 1,
+      "explanation": "'extends' dùng cho class inheritance."
+    },
+    {
+      "id": "f3_q003",
+      "topic": "Inheritance",
+      "difficulty": "medium",
+      "question": "Subclass kế thừa gì từ superclass?",
+      "options": [
+        "Chỉ private fields",
+        "Chỉ public methods",
+        "Non-private fields và methods",
+        "Chỉ constructors"
+      ],
+      "answerIndex": 2,
+      "explanation": "Subclass kế thừa accessible members."
+    },
+    {
+      "id": "f3_q004",
+      "topic": "Inheritance",
+      "difficulty": "easy",
+      "question": "Multiple inheritance có trong Java không?",
+      "options": [
+        "Có",
+        "Không",
+        "Có với interface",
+        "Có với abstract class"
+      ],
+      "answerIndex": 1,
+      "explanation": "Java không support multiple class inheritance."
+    },
+    {
+      "id": "f3_q005",
+      "topic": "Inheritance",
+      "difficulty": "medium",
+      "question": "super() dùng để gọi?",
+      "options": [
+        "Method của subclass",
+        "Constructor của superclass",
+        "Static method",
+        "Private method"
+      ],
+      "answerIndex": 1,
+      "explanation": "super() gọi constructor của parent class."
+    },
+    {
+      "id": "f3_q006",
+      "topic": "Inheritance",
+      "difficulty": "easy",
+      "question": "Trong inheritance, IS-A relationship nghĩa là?",
+      "options": [
+        "Subclass is a type of superclass",
+        "Superclass is a subclass",
+        "Không liên quan",
+        "Composition relationship"
+      ],
+      "answerIndex": 0,
+      "explanation": "IS-A: Dog is an Animal."
+    },
+    {
+      "id": "f3_q007",
+      "topic": "Inheritance",
+      "difficulty": "medium",
+      "question": "Method overriding là gì?",
+      "options": [
+        "Định nghĩa method mới",
+        "Thay đổi implementation của inherited method",
+        "Ẩn method",
+        "Tạo method static"
+      ],
+      "answerIndex": 1,
+      "explanation": "Override thay đổi behavior của method từ parent."
+    },
+    {
+      "id": "f3_q008",
+      "topic": "Inheritance",
+      "difficulty": "easy",
+      "question": "Để override method, cần gì?",
+      "options": [
+        "Same name, same parameters",
+        "Same name, different parameters",
+        "Different name, same parameters",
+        "Static modifier"
+      ],
+      "answerIndex": 0,
+      "explanation": "Override yêu cầu signature giống hệt."
+    },
+    {
+      "id": "f3_q009",
+      "topic": "Inheritance",
+      "difficulty": "medium",
+      "question": "final class có thể được kế thừa không?",
+      "options": [
+        "Có",
+        "Không",
+        "Chỉ từ subclass",
+        "Chỉ với interface"
+      ],
+      "answerIndex": 1,
+      "explanation": "final class không thể extend."
+    },
+    {
+      "id": "f3_q010",
+      "topic": "Inheritance",
+      "difficulty": "easy",
+      "question": "Inheritance giúp tránh?",
+      "options": [
+        "Code duplication",
+        "Encapsulation",
+        "Polymorphism",
+        "Abstraction"
+      ],
+      "answerIndex": 0,
+      "explanation": "Inheritance tái sử dụng code."
+    },
+    {
+      "id": "f3_q011",
+      "topic": "Inheritance",
+      "difficulty": "medium",
+      "question": "super keyword dùng để?",
+      "options": [
+        "Truy cập parent class members",
+        "Tạo object",
+        "Implement interface",
+        "Define abstract method"
+      ],
+      "answerIndex": 0,
+      "explanation": "super truy cập parent class."
+    },
+    {
+      "id": "f3_q012",
+      "topic": "Inheritance",
+      "difficulty": "easy",
+      "question": "Trong Java, tất cả class đều kế thừa từ?",
+      "options": [
+        "Object class",
+        "Main class",
+        "Void class",
+        "Không có"
+      ],
+      "answerIndex": 0,
+      "explanation": "Mọi class đều extends Object implicitly."
+    },
+    {
+      "id": "f3_q013",
+      "topic": "Inheritance",
+      "difficulty": "medium",
+      "question": "Composition vs Inheritance?",
+      "options": [
+        "Composition linh hoạt hơn",
+        "Inheritance tốt hơn",
+        "Giống nhau",
+        "Composition chỉ cho interface"
+      ],
+      "answerIndex": 0,
+      "explanation": "Composition tránh tight coupling của inheritance."
+    },
+    {
+      "id": "f3_q014",
+      "topic": "Inheritance",
+      "difficulty": "easy",
+      "question": "Abstract class có thể instantiated không?",
+      "options": [
+        "Có",
+        "Không",
+        "Chỉ trong subclass",
+        "Chỉ với new"
+      ],
+      "answerIndex": 1,
+      "explanation": "Abstract class không thể tạo object trực tiếp."
+    },
+    {
+      "id": "f3_q015",
+      "topic": "Inheritance",
+      "difficulty": "medium",
+      "question": "Lợi ích của inheritance là gì?",
+      "options": [
+        "Code reusability và maintainability",
+        "Giảm performance",
+        "Tăng complexity",
+        "Giảm security"
+      ],
+      "answerIndex": 0,
+      "explanation": "Inheritance giúp tái sử dụng và mở rộng code."
+    }
+  ],
+  "oop_floor_4": [
+    {
+      "id": "f4_q001",
+      "topic": "Polymorphism",
+      "difficulty": "easy",
+      "question": "Polymorphism trong OOP nghĩa là?",
+      "options": [
+        "Một object có nhiều hình thức",
+        "Ẩn dữ liệu",
+        "Kế thừa",
+        "Tạo class"
+      ],
+      "answerIndex": 0,
+      "explanation": "Poly = many, morph = form."
+    },
+    {
+      "id": "f4_q002",
+      "topic": "Polymorphism",
+      "difficulty": "easy",
+      "question": "Method overloading là gì?",
+      "options": [
+        "Override method",
+        "Nhiều method cùng tên, khác parameters",
+        "Kế thừa method",
+        "Ẩn method"
+      ],
+      "answerIndex": 1,
+      "explanation": "Overloading: same name, different signatures."
+    },
+    {
+      "id": "f4_q003",
+      "topic": "Polymorphism",
+      "difficulty": "medium",
+      "question": "Method overriding xảy ra khi?",
+      "options": [
+        "Compile time",
+        "Runtime",
+        "Khi kế thừa",
+        "Khi implement interface"
+      ],
+      "answerIndex": 1,
+      "explanation": "Overriding resolved tại runtime."
+    },
+    {
+      "id": "f4_q004",
+      "topic": "Polymorphism",
+      "difficulty": "easy",
+      "question": "Upcasting là gì?",
+      "options": [
+        "Cast subclass to superclass",
+        "Cast superclass to subclass",
+        "Không cast",
+        "Cast primitive"
+      ],
+      "answerIndex": 0,
+      "explanation": "Upcasting: Dog -> Animal."
+    },
+    {
+      "id": "f4_q005",
+      "topic": "Polymorphism",
+      "difficulty": "medium",
+      "question": "Dynamic binding là gì?",
+      "options": [
+        "Method call resolved tại runtime",
+        "Tại compile time",
+        "Chỉ cho static methods",
+        "Chỉ cho constructors"
+      ],
+      "answerIndex": 0,
+      "explanation": "Dynamic binding cho polymorphism."
+    },
+    {
+      "id": "f4_q006",
+      "topic": "Polymorphism",
+      "difficulty": "easy",
+      "question": "Polymorphism giúp gì?",
+      "options": [
+        "Code flexibility",
+        "Giảm memory",
+        "Tăng speed",
+        "Giảm readability"
+      ],
+      "answerIndex": 0,
+      "explanation": "Polymorphism cho phép code xử lý nhiều types."
+    },
+    {
+      "id": "f4_q007",
+      "topic": "Polymorphism",
+      "difficulty": "medium",
+      "question": "Overloading vs Overriding?",
+      "options": [
+        "Overloading same class, overriding inheritance",
+        "Giống nhau",
+        "Overloading runtime, overriding compile",
+        "Overriding same class"
+      ],
+      "answerIndex": 0,
+      "explanation": "Overloading trong class, overriding qua inheritance."
+    },
+    {
+      "id": "f4_q008",
+      "topic": "Polymorphism",
+      "difficulty": "easy",
+      "question": "Polymorphism có mấy loại?",
+      "options": [
+        "1",
+        "2",
+        "3",
+        "4"
+      ],
+      "answerIndex": 1,
+      "explanation": "Compile-time (overloading) và runtime (overriding)."
+    },
+    {
+      "id": "f4_q009",
+      "topic": "Polymorphism",
+      "difficulty": "medium",
+      "question": "Tại sao cần polymorphism?",
+      "options": [
+        "Để viết code generic",
+        "Để ẩn data",
+        "Để kế thừa",
+        "Để encapsulate"
+      ],
+      "answerIndex": 0,
+      "explanation": "Polymorphism cho phép treat objects uniformly."
+    },
+    {
+      "id": "f4_q010",
+      "topic": "Polymorphism",
+      "difficulty": "easy",
+      "question": "Ví dụ về polymorphism?",
+      "options": [
+        "Animal a = new Dog()",
+        "int x = 5",
+        "class A {}",
+        "void method() {}"
+      ],
+      "answerIndex": 0,
+      "explanation": "Upcasting và dynamic method dispatch."
+    },
+    {
+      "id": "f4_q011",
+      "topic": "Polymorphism",
+      "difficulty": "medium",
+      "question": "Covariant return type là gì?",
+      "options": [
+        "Override method return subtype",
+        "Return same type",
+        "Return primitive",
+        "Không thể override return"
+      ],
+      "answerIndex": 0,
+      "explanation": "Java 5+ cho phép return subtype trong override."
+    },
+    {
+      "id": "f4_q012",
+      "topic": "Polymorphism",
+      "difficulty": "easy",
+      "question": "Polymorphism liên quan đến inheritance như thế nào?",
+      "options": [
+        "Polymorphism dựa trên inheritance",
+        "Hoàn toàn độc lập",
+        "Inheritance thay thế polymorphism",
+        "Polymorphism chỉ cho composition"
+      ],
+      "answerIndex": 0,
+      "explanation": "Polymorphism thường dùng với inheritance."
+    },
+    {
+      "id": "f4_q013",
+      "topic": "Polymorphism",
+      "difficulty": "medium",
+      "question": "Static binding là gì?",
+      "options": [
+        "Resolved tại compile time",
+        "Tại runtime",
+        "Chỉ cho instance methods",
+        "Chỉ cho final methods"
+      ],
+      "answerIndex": 0,
+      "explanation": "Static methods và private methods dùng static binding."
+    },
+    {
+      "id": "f4_q014",
+      "topic": "Polymorphism",
+      "difficulty": "easy",
+      "question": "Polymorphism tăng?",
+      "options": [
+        "Code reusability",
+        "Memory usage",
+        "Compile time",
+        "File size"
+      ],
+      "answerIndex": 0,
+      "explanation": "Polymorphism cho phép code xử lý nhiều types."
+    },
+    {
+      "id": "f4_q015",
+      "topic": "Polymorphism",
+      "difficulty": "medium",
+      "question": "Ví dụ thực tế của polymorphism?",
+      "options": [
+        "List interface với ArrayList/LinkedList",
+        "int array",
+        "String concatenation",
+        "Math operations"
+      ],
+      "answerIndex": 0,
+      "explanation": "Collections framework dùng polymorphism."
+    }
+  ],
+  "oop_floor_5": [
+    {
+      "id": "f5_q001",
+      "topic": "Abstraction",
+      "difficulty": "easy",
+      "question": "Abstraction trong OOP là gì?",
+      "options": [
+        "Ẩn implementation details",
+        "Tạo object",
+        "Kế thừa",
+        "Đa hình"
+      ],
+      "answerIndex": 0,
+      "explanation": "Abstraction tập trung vào 'what', không 'how'."
+    },
+    {
+      "id": "f5_q002",
+      "topic": "Abstraction",
+      "difficulty": "easy",
+      "question": "Abstract class trong Java là?",
+      "options": [
+        "Class không thể instantiated",
+        "Class chỉ có static methods",
+        "Class chỉ có fields",
+        "Class không có constructor"
+      ],
+      "answerIndex": 0,
+      "explanation": "Abstract class cần được extend."
+    },
+    {
+      "id": "f5_q003",
+      "topic": "Abstraction",
+      "difficulty": "medium",
+      "question": "Abstract method có body không?",
+      "options": [
+        "Có",
+        "Không",
+        "Tùy",
+        "Chỉ static"
+      ],
+      "answerIndex": 1,
+      "explanation": "Abstract method chỉ declaration, không implementation."
+    },
+    {
+      "id": "f5_q004",
+      "topic": "Abstraction",
+      "difficulty": "easy",
+      "question": "Interface trong Java là gì?",
+      "options": [
+        "Contract cho classes implement",
+        "Class cụ thể",
+        "Chỉ chứa fields",
+        "Chỉ chứa methods"
+      ],
+      "answerIndex": 0,
+      "explanation": "Interface định nghĩa behavior mà classes phải implement."
+    },
+    {
+      "id": "f5_q005",
+      "topic": "Abstraction",
+      "difficulty": "medium",
+      "question": "Class có thể implement nhiều interface không?",
+      "options": [
+        "Có",
+        "Không",
+        "Chỉ một",
+        "Chỉ với abstract class"
+      ],
+      "answerIndex": 0,
+      "explanation": "Java support multiple interface implementation."
+    },
+    {
+      "id": "f5_q006",
+      "topic": "Abstraction",
+      "difficulty": "easy",
+      "question": "Từ khóa cho interface là?",
+      "options": [
+        "class",
+        "interface",
+        "abstract",
+        "implements"
+      ],
+      "answerIndex": 1,
+      "explanation": "'interface' khai báo interface."
+    },
+    {
+      "id": "f5_q007",
+      "topic": "Abstraction",
+      "difficulty": "medium",
+      "question": "Abstract class vs Interface?",
+      "options": [
+        "Abstract class có state, interface không",
+        "Giống nhau hoàn toàn",
+        "Interface có state, abstract class không",
+        "Abstract class chỉ methods"
+      ],
+      "answerIndex": 0,
+      "explanation": "Abstract class có thể có fields, interface chỉ constants."
+    },
+    {
+      "id": "f5_q008",
+      "topic": "Abstraction",
+      "difficulty": "easy",
+      "question": "Interface methods mặc định là?",
+      "options": [
+        "public abstract",
+        "private static",
+        "protected final",
+        "package-private"
+      ],
+      "answerIndex": 0,
+      "explanation": "Interface methods implicitly public abstract."
+    },
+    {
+      "id": "f5_q009",
+      "topic": "Abstraction",
+      "difficulty": "medium",
+      "question": "Default methods trong interface từ Java?",
+      "options": [
+        "7",
+        "8",
+        "9",
+        "10"
+      ],
+      "answerIndex": 1,
+      "explanation": "Java 8 thêm default methods."
+    },
+    {
+      "id": "f5_q010",
+      "topic": "Abstraction",
+      "difficulty": "easy",
+      "question": "Abstraction giúp gì?",
+      "options": [
+        "Giảm complexity",
+        "Tăng implementation details",
+        "Giảm reusability",
+        "Tăng coupling"
+      ],
+      "answerIndex": 0,
+      "explanation": "Abstraction ẩn unnecessary details."
+    },
+    {
+      "id": "f5_q011",
+      "topic": "Abstraction",
+      "difficulty": "medium",
+      "question": "Functional interface là gì?",
+      "options": [
+        "Interface có đúng một abstract method",
+        "Interface không có method",
+        "Interface chỉ static methods",
+        "Interface chỉ default methods"
+      ],
+      "answerIndex": 0,
+      "explanation": "Functional interface dùng cho lambda expressions."
+    },
+    {
+      "id": "f5_q012",
+      "topic": "Abstraction",
+      "difficulty": "easy",
+      "question": "Abstract class có constructor không?",
+      "options": [
+        "Có",
+        "Không",
+        "Tùy",
+        "Chỉ protected"
+      ],
+      "answerIndex": 0,
+      "explanation": "Abstract class có constructor cho subclass."
+    },
+    {
+      "id": "f5_q013",
+      "topic": "Abstraction",
+      "difficulty": "medium",
+      "question": "Marker interface là gì?",
+      "options": [
+        "Interface không có methods",
+        "Interface có nhiều methods",
+        "Interface chỉ abstract",
+        "Interface chỉ default"
+      ],
+      "answerIndex": 0,
+      "explanation": "Marker interfaces như Serializable chỉ đánh dấu."
+    },
+    {
+      "id": "f5_q014",
+      "topic": "Abstraction",
+      "difficulty": "easy",
+      "question": "Interface có thể extend interface khác không?",
+      "options": [
+        "Có",
+        "Không",
+        "Chỉ một",
+        "Chỉ với class"
+      ],
+      "answerIndex": 0,
+      "explanation": "Interfaces có thể extend multiple interfaces."
+    },
+    {
+      "id": "f5_q015",
+      "topic": "Abstraction",
+      "difficulty": "medium",
+      "question": "Lợi ích của abstraction?",
+      "options": [
+        "Modularity và maintainability",
+        "Giảm performance",
+        "Tăng code size",
+        "Giảm flexibility"
+      ],
+      "answerIndex": 0,
+      "explanation": "Abstraction giúp manage complexity."
+    }
+  ],
+  "oop_floor_6": [
+    {
+      "id": "f6_q001",
+      "topic": "Interface",
+      "difficulty": "easy",
+      "question": "Interface trong Java là gì?",
+      "options": [
+        "Blueprint cho classes",
+        "Concrete implementation",
+        "Data structure",
+        "Exception type"
+      ],
+      "answerIndex": 0,
+      "explanation": "Interface định nghĩa contract mà classes phải tuân theo."
+    },
+    {
+      "id": "f6_q002",
+      "topic": "Interface",
+      "difficulty": "easy",
+      "question": "Từ khóa implements dùng để?",
+      "options": [
+        "Extend class",
+        "Implement interface",
+        "Create object",
+        "Define method"
+      ],
+      "answerIndex": 1,
+      "explanation": "'implements' cho classes implement interfaces."
+    },
+    {
+      "id": "f6_q003",
+      "topic": "Interface",
+      "difficulty": "medium",
+      "question": "Interface có thể chứa?",
+      "options": [
+        "Instance fields",
+        "Static constants",
+        "Abstract methods",
+        "Static constants, abstract methods và default/static methods"
+      ],
+      "answerIndex": 3,
+      "explanation": "Interface có constants, abstract methods, default/static methods."
+    },
+    {
+      "id": "f6_q004",
+      "topic": "Interface",
+      "difficulty": "easy",
+      "question": "Multiple inheritance với interface?",
+      "options": [
+        "Không được phép",
+        "Được phép",
+        "Chỉ với abstract class",
+        "Chỉ một interface"
+      ],
+      "answerIndex": 1,
+      "explanation": "Class có thể implement nhiều interfaces."
+    },
+    {
+      "id": "f6_q005",
+      "topic": "Interface",
+      "difficulty": "medium",
+      "question": "Diamond problem trong interface?",
+      "options": [
+        "Không xảy ra",
+        "Xảy ra với default methods",
+        "Chỉ với multiple inheritance",
+        "Không liên quan"
+      ],
+      "answerIndex": 1,
+      "explanation": "Java 8 default methods có thể gây conflict."
+    },
+    {
+      "id": "f6_q006",
+      "topic": "Interface",
+      "difficulty": "easy",
+      "question": "Static methods trong interface?",
+      "options": [
+        "Có thể có từ Java 8",
+        "Không được phép",
+        "Chỉ abstract",
+        "Chỉ default"
+      ],
+      "answerIndex": 0,
+      "explanation": "Java 8 cho phép static methods trong interface."
+    },
+    {
+      "id": "f6_q007",
+      "topic": "Interface",
+      "difficulty": "medium",
+      "question": "Functional interface cần?",
+      "options": [
+        "Ít nhất một abstract method",
+        "Không có abstract method",
+        "Chỉ static methods",
+        "Chỉ default methods"
+      ],
+      "answerIndex": 0,
+      "explanation": "Functional interface có đúng một abstract method."
+    },
+    {
+      "id": "f6_q008",
+      "topic": "Interface",
+      "difficulty": "easy",
+      "question": "Interface có constructor không?",
+      "options": [
+        "Có",
+        "Không",
+        "Tùy",
+        "Chỉ protected"
+      ],
+      "answerIndex": 1,
+      "explanation": "Interfaces không có constructors."
+    },
+    {
+      "id": "f6_q009",
+      "topic": "Interface",
+      "difficulty": "medium",
+      "question": "@FunctionalInterface annotation?",
+      "options": [
+        "Bắt buộc",
+        "Tùy chọn",
+        "Không cần",
+        "Chỉ cho classes"
+      ],
+      "answerIndex": 1,
+      "explanation": "Annotation giúp compiler check functional interface."
+    },
+    {
+      "id": "f6_q010",
+      "topic": "Interface",
+      "difficulty": "easy",
+      "question": "Interface fields mặc định là?",
+      "options": [
+        "public static final",
+        "private",
+        "protected",
+        "package-private"
+      ],
+      "answerIndex": 0,
+      "explanation": "Interface fields implicitly public static final."
+    },
+    {
+      "id": "f6_q011",
+      "topic": "Interface",
+      "difficulty": "medium",
+      "question": "Private methods trong interface từ Java?",
+      "options": [
+        "8",
+        "9",
+        "10",
+        "11"
+      ],
+      "answerIndex": 1,
+      "explanation": "Java 9 thêm private methods trong interface."
+    },
+    {
+      "id": "f6_q012",
+      "topic": "Interface",
+      "difficulty": "easy",
+      "question": "Interface segregation principle?",
+      "options": [
+        "Clients không nên depend trên unused interfaces",
+        "Classes nên implement ít interfaces",
+        "Interfaces nên lớn",
+        "Không liên quan"
+      ],
+      "answerIndex": 0,
+      "explanation": "ISP: Keep interfaces small and focused."
+    },
+    {
+      "id": "f6_q013",
+      "topic": "Interface",
+      "difficulty": "medium",
+      "question": "Default methods giải quyết vấn đề gì?",
+      "options": [
+        "Backward compatibility",
+        "Performance",
+        "Security",
+        "Memory"
+      ],
+      "answerIndex": 0,
+      "explanation": "Default methods cho phép add methods mà không break existing code."
+    },
+    {
+      "id": "f6_q014",
+      "topic": "Interface",
+      "difficulty": "easy",
+      "question": "Interface có thể extend class không?",
+      "options": [
+        "Có",
+        "Không",
+        "Chỉ abstract class",
+        "Chỉ concrete class"
+      ],
+      "answerIndex": 1,
+      "explanation": "Interfaces không thể extend classes."
+    },
+    {
+      "id": "f6_q015",
+      "topic": "Interface",
+      "difficulty": "medium",
+      "question": "Lợi ích của interface?",
+      "options": [
+        "Loosely coupled code",
+        "Tight coupling",
+        "Giảm reusability",
+        "Tăng complexity"
+      ],
+      "answerIndex": 0,
+      "explanation": "Interfaces enable loose coupling và polymorphism."
+    }
+  ],
+  "oop_final": [
+    {
+      "id": "final_q001",
+      "topic": "OOP Principles",
+      "difficulty": "medium",
+      "question": "4 nguyên lý OOP cơ bản là?",
+      "options": [
+        "Encapsulation, Inheritance, Polymorphism, Abstraction",
+        "Class, Object, Method, Field",
+        "Public, Private, Protected, Package",
+        "Static, Instance, Local, Global"
+      ],
+      "answerIndex": 0,
+      "explanation": "4 pillars: Encapsulation, Inheritance, Polymorphism, Abstraction."
+    },
+    {
+      "id": "final_q002",
+      "topic": "Abstract Class vs Interface",
+      "difficulty": "medium",
+      "question": "Abstract class có thể có constructor, interface thì?",
+      "options": [
+        "Có",
+        "Không",
+        "Tùy",
+        "Chỉ protected"
+      ],
+      "answerIndex": 1,
+      "explanation": "Interfaces không có constructors."
+    },
+    {
+      "id": "final_q003",
+      "topic": "Overriding vs Overloading",
+      "difficulty": "medium",
+      "question": "Overriding xảy ra trong?",
+      "options": [
+        "Cùng class",
+        "Inheritance hierarchy",
+        "Interface implementation",
+        "Static context"
+      ],
+      "answerIndex": 1,
+      "explanation": "Overriding giữa superclass và subclass."
+    },
+    {
+      "id": "final_q004",
+      "topic": "Dynamic Binding",
+      "difficulty": "hard",
+      "question": "Dynamic method dispatch nghĩa là?",
+      "options": [
+        "Method call resolved tại runtime dựa trên actual object type",
+        "Tại compile time",
+        "Chỉ cho static methods",
+        "Chỉ cho final methods"
+      ],
+      "answerIndex": 0,
+      "explanation": "JVM quyết định method nào gọi tại runtime."
+    },
+    {
+      "id": "final_q005",
+      "topic": "Upcasting & Polymorphism",
+      "difficulty": "medium",
+      "question": "Upcasting cho phép?",
+      "options": [
+        "Treat subclass object as superclass type",
+        "Convert superclass to subclass",
+        "Change object type permanently",
+        "Create new object"
+      ],
+      "answerIndex": 0,
+      "explanation": "Upcasting: Animal a = new Dog();"
+    },
+    {
+      "id": "final_q006",
+      "topic": "Design Patterns - Singleton",
+      "difficulty": "hard",
+      "question": "Singleton pattern đảm bảo?",
+      "options": [
+        "Chỉ một instance của class tồn tại",
+        "Nhiều instances",
+        "Instance được tạo lazy",
+        "Thread-safe"
+      ],
+      "answerIndex": 0,
+      "explanation": "Singleton restricts instantiation."
+    },
+    {
+      "id": "final_q007",
+      "topic": "Design Patterns - Factory",
+      "difficulty": "medium",
+      "question": "Factory pattern dùng để?",
+      "options": [
+        "Tạo objects mà không specify exact class",
+        "Tạo single instance",
+        "Manage object lifecycle",
+        "Cache objects"
+      ],
+      "answerIndex": 0,
+      "explanation": "Factory encapsulates object creation."
+    },
+    {
+      "id": "final_q008",
+      "topic": "Design Patterns - Strategy",
+      "difficulty": "hard",
+      "question": "Strategy pattern cho phép?",
+      "options": [
+        "Thay đổi algorithm tại runtime",
+        "Tạo objects",
+        "Manage state",
+        "Handle events"
+      ],
+      "answerIndex": 0,
+      "explanation": "Strategy defines family of algorithms."
+    },
+    {
+      "id": "final_q009",
+      "topic": "Design Patterns - Observer",
+      "difficulty": "medium",
+      "question": "Observer pattern dùng khi?",
+      "options": [
+        "Một object thay đổi cần notify others",
+        "Tạo single instance",
+        "Encapsulate creation",
+        "Define algorithms"
+      ],
+      "answerIndex": 0,
+      "explanation": "Observer implements publish-subscribe."
+    },
+    {
+      "id": "final_q010",
+      "topic": "SOLID Principles",
+      "difficulty": "hard",
+      "question": "Single Responsibility Principle nói rằng?",
+      "options": [
+        "Class nên có một lý do duy nhất để thay đổi",
+        "Class nên kế thừa nhiều",
+        "Class nên implement ít interfaces",
+        "Class nên có nhiều methods"
+      ],
+      "answerIndex": 0,
+      "explanation": "SRP: A class should have only one reason to change."
+    },
+    {
+      "id": "final_q011",
+      "topic": "SOLID Principles",
+      "difficulty": "hard",
+      "question": "Open/Closed Principle?",
+      "options": [
+        "Open for extension, closed for modification",
+        "Open for modification, closed for extension",
+        "Open for inheritance",
+        "Closed for polymorphism"
+      ],
+      "answerIndex": 0,
+      "explanation": "OCP: Extend behavior without modifying existing code."
+    },
+    {
+      "id": "final_q012",
+      "topic": "SOLID Principles",
+      "difficulty": "medium",
+      "question": "Liskov Substitution Principle?",
+      "options": [
+        "Subclass objects có thể thay superclass objects",
+        "Subclass không thể thay superclass",
+        "Chỉ cho abstract classes",
+        "Chỉ cho interfaces"
+      ],
+      "answerIndex": 0,
+      "explanation": "LSP: Subtypes must be substitutable for their base types."
+    },
+    {
+      "id": "final_q013",
+      "topic": "SOLID Principles",
+      "difficulty": "hard",
+      "question": "Interface Segregation Principle?",
+      "options": [
+        "Clients không nên depend trên unused interfaces",
+        "Classes nên implement tất cả interfaces",
+        "Interfaces nên lớn",
+        "Không có segregation"
+      ],
+      "answerIndex": 0,
+      "explanation": "ISP: No client should be forced to depend on methods it does not use."
+    },
+    {
+      "id": "final_q014",
+      "topic": "SOLID Principles",
+      "difficulty": "medium",
+      "question": "Dependency Inversion Principle?",
+      "options": [
+        "Depend on abstractions, not concretions",
+        "Depend on concrete classes",
+        "Avoid interfaces",
+        "Use inheritance everywhere"
+      ],
+      "answerIndex": 0,
+      "explanation": "DIP: High-level modules should not depend on low-level modules."
+    },
+    {
+      "id": "final_q015",
+      "topic": "Advanced OOP",
+      "difficulty": "hard",
+      "question": "Composition over Inheritance nghĩa là?",
+      "options": [
+        "Sử dụng has-a relationship thay vì is-a khi có thể",
+        "Luôn dùng inheritance",
+        "Tránh composition",
+        "Composition chỉ cho interfaces"
+      ],
+      "answerIndex": 0,
+      "explanation": "Composition provides better flexibility than inheritance."
+    }
+  ]
+}

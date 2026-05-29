@@ -30,18 +30,22 @@ public class ShopDialog extends JDialog {
         itemsPanel.setLayout(new BoxLayout(itemsPanel, BoxLayout.Y_AXIS));
         itemsPanel.setBorder(BorderFactory.createEmptyBorder(10, 20, 10, 20));
 
-        for (Seed seed : Seed.values()) {
-            addItemRow(itemsPanel, seed);
+        int mapID = GameManager.getInstance().getCurrentMapID();
+
+        if (mapID == 1) {
+            setTitle("Cửa hàng nông sản Sơn La");
+            for (Seed seed : Seed.values()) {
+                addItemRow(itemsPanel, seed);
+            }
+            addConsumableRow(itemsPanel, "Gói Cơm Nắm", 8, 5, 0);
+            addConsumableRow(itemsPanel, "Bình Nước Sơn La", 15, 8, 0.10);
+            addEquipmentRow(itemsPanel, "Cuốc Đất Sắt", 0);
+        } else if (mapID == 2) {
+            setTitle("Siêu thị tiện ích C2");
+            addConsumableRow(itemsPanel, "Cà Phê Đen Robusta", 12, 2, 0.15); // +15% Willpower
+            addConsumableRow(itemsPanel, "Nước Tăng Lực Monster", 20, 5, 0.25); // +25% Willpower
+            addC2EquipmentRow(itemsPanel, "Sổ Ghi Chép Chiến Lược", 35);
         }
-
-        // Thêm Gói Cơm Nắm (8 VNĐ, +5 Energy)
-        addConsumableRow(itemsPanel, "Gói Cơm Nắm", 8, 5, 0);
-
-        // Thêm Bình Nước Sơn La (15 VNĐ, +8 Energy, +10% Willpower)
-        addConsumableRow(itemsPanel, "Bình Nước Sơn La", 15, 8, 0.10);
-
-        // Thêm Cuốc Đất Sắt (Miễn phí - Thưởng quest)
-        addEquipmentRow(itemsPanel, "Cuốc Đất Sắt", 0);
 
         add(new JScrollPane(itemsPanel), BorderLayout.CENTER);
         
@@ -132,6 +136,33 @@ public class ShopDialog extends JDialog {
 
         row.add(nameLabel, BorderLayout.WEST);
         row.add(btnGet, BorderLayout.EAST);
+    }
+
+    private void addC2EquipmentRow(JPanel panel, String name, int price) {
+        Player player = GameManager.getInstance().getPlayer();
+        if (player.hasStrategyNotebook()) return; 
+
+        JPanel row = new JPanel(new BorderLayout());
+        row.setMaximumSize(new Dimension(500, 60));
+        row.setBorder(BorderFactory.createMatteBorder(0, 0, 1, 0, Color.LIGHT_GRAY));
+
+        JLabel nameLabel = new JLabel(String.format("%s (%d VNĐ) [+10%% 📋]", name, price));
+        JButton btnBuy = new JButton("Mua trang bị");
+
+        btnBuy.addActionListener(e -> {
+            if (player.getFinance() >= price) {
+                player.addFinance(-price);
+                player.setHasStrategyNotebook(true);
+                JOptionPane.showMessageDialog(this, "Bạn đã sở hữu " + name + "!");
+                dispose();
+                new ShopDialog((Frame)getParent(), statsPanel).setVisible(true);
+            } else {
+                JOptionPane.showMessageDialog(this, "Bạn không đủ tiền!");
+            }
+        });
+
+        row.add(nameLabel, BorderLayout.WEST);
+        row.add(btnBuy, BorderLayout.EAST);
         panel.add(row);
     }
 }

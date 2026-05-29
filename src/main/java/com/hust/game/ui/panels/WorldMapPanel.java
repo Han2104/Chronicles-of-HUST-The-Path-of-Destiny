@@ -1,23 +1,28 @@
 package com.hust.game.ui.panels;
 
 import com.hust.game.ui.GameWindow;
+import com.hust.game.core.GameManager;
+import com.hust.game.util.AssetLoader;
 
 import javax.swing.*;
 import java.awt.*;
-import java.io.File;
-import javax.imageio.ImageIO;
+import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
- * WorldMapPanel - Giao diện bản đồ thế giới sử dụng hình ảnh Isometric.
+ * WorldMapPanel - Giao diện bản đồ thế giới với các Hotspot tàng hình.
  */
 public class WorldMapPanel extends JPanel {
     private BufferedImage backgroundImage;
     private GameWindow window;
     private StatsPanel statsPanel;
-    private java.util.List<ButtonInfo> buttons = new java.util.ArrayList<>();
-    private final double BASE_W = 1000.0;
-    private final double BASE_H = 650.0;
+    private final List<ButtonInfo> mapButtons = new ArrayList<>();
+    
+    // Dùng kích thước ảnh gốc để tính hitbox theo tỷ lệ
+    private final double BASE_W = 2976.0;
+    private final double BASE_H = 1438.0;
 
     private static class ButtonInfo {
         JButton btn;
@@ -31,18 +36,17 @@ public class WorldMapPanel extends JPanel {
         this.window = window;
         this.statsPanel = statsPanel;
         
-        setLayout(null); 
+        setLayout(null);
 
-        try {
-            backgroundImage = ImageIO.read(new File("assets/world_map.png"));
-        } catch (Exception e) {
-            System.err.println("❌ Lỗi: Không tìm thấy ảnh assets/world_map.png.");
-        }
+        backgroundImage = AssetLoader.loadImage("assets/world_map.png");
 
-        createIslandButton("Sơn La", 100, 250, 150, 100, "MAP_SONLA", 1);
-        createIslandButton("C2 - Ký túc xá", 200, 50, 150, 100, "MAP_C2", 2);
-        createIslandButton("D9 - Mê cung", 600, 500, 200, 150, "MAP_D9", 3);
-        createIslandButton("B1 - Arena", 650, 350, 150, 120, "MAP_B1", 4);
+        // Tạo các hotspot cho bản đồ 2D pixel art mới
+        createRegionButton("Sơn La Origin Zone", 150, 72, 982, 532, e -> openMap1());
+        createRegionButton("C2 Discipline Zone", 1786, 72, 1042, 532, e -> openMap2());
+        createRegionButton("B1 Đấu Trường Huyền Thoại", 150, 604, 1101, 719, e -> openMap4());
+        createRegionButton("D9 Mê Cung Học Thuật", 1620, 604, 980, 760, e -> openMap3());
+        createRegionButton("JOB - Vị Thế Quyền Lực", 1320, 430, 350, 500, e -> openJobTreasure());
+        createRegionButton("Xe khách lên Hà Nội", 2600, 1080, 320, 300, e -> showBusIconInfo());
 
         this.addComponentListener(new java.awt.event.ComponentAdapter() {
             @Override
@@ -52,11 +56,83 @@ public class WorldMapPanel extends JPanel {
         });
     }
 
+    @Override
+    public void addNotify() {
+        super.addNotify();
+        SwingUtilities.invokeLater(this::repositionComponents);
+    }
+
+    private void createRegionButton(String name, int x, int y, int w, int h, ActionListener action) {
+        JButton btn = new JButton(name);
+        btn.setFont(new Font("Arial", Font.BOLD, 14));
+        btn.setForeground(new Color(255, 255, 255, 0)); // Tàng hình mặc định
+        btn.setOpaque(false);
+        btn.setContentAreaFilled(false);
+        btn.setBorderPainted(false);
+        btn.setFocusPainted(false);
+        btn.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        btn.setToolTipText(name);
+        btn.setEnabled(true);
+
+        btn.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseEntered(java.awt.event.MouseEvent e) {
+                btn.setForeground(Color.WHITE);
+            }
+            public void mouseExited(java.awt.event.MouseEvent e) {
+                btn.setForeground(new Color(255, 255, 255, 0));
+            }
+        });
+
+        btn.addActionListener(action);
+        mapButtons.add(new ButtonInfo(btn, x, y, w, h));
+        add(btn);
+    }
+
+    private void openMap1() {
+        System.out.println("[Navigation] Opening SonLa");
+        window.showPanel("MAP_SONLA");
+        GameManager.getInstance().switchMap(1);
+        statsPanel.updateStats();
+    }
+
+    private void openMap2() {
+        System.out.println("[Navigation] Opening C2");
+        window.showPanel("MAP_C2");
+        GameManager.getInstance().switchMap(2);
+        statsPanel.updateStats();
+    }
+
+    private void openMap3() {
+        System.out.println("[Navigation] Opening D9");
+        window.showPanel("MAP_D9");
+        GameManager.getInstance().switchMap(3);
+        statsPanel.updateStats();
+    }
+
+    private void openMap4() {
+        System.out.println("[Navigation] Opening B1");
+        window.showPanel("MAP_B1");
+        GameManager.getInstance().switchMap(4);
+        statsPanel.updateStats();
+    }
+
+    private void openJobTreasure() {
+        JOptionPane.showMessageDialog(this,
+                "JOB - Vị Thế Quyền Lực hiện là khu vực thông tin, không chặn quyền vào các bản đồ chính.",
+                "JOB - Vị Thế Quyền Lực", JOptionPane.INFORMATION_MESSAGE);
+    }
+
+    private void showBusIconInfo() {
+        JOptionPane.showMessageDialog(this,
+                "Xe khách lên Hà Nội. Nếu chưa có logic riêng, đây là biểu tượng trang trí.",
+                "Xe khách", JOptionPane.INFORMATION_MESSAGE);
+    }
+
     private void repositionComponents() {
         double scaleX = getWidth() / BASE_W;
         double scaleY = getHeight() / BASE_H;
 
-        for (ButtonInfo info : buttons) {
+        for (ButtonInfo info : mapButtons) {
             info.btn.setBounds(
                 (int)(info.origX * scaleX), 
                 (int)(info.origY * scaleY), 
@@ -68,38 +144,13 @@ public class WorldMapPanel extends JPanel {
         repaint();
     }
 
-    private void createIslandButton(String name, int x, int y, int w, int h, String cardName, int mapID) {
-        JButton btn = new JButton();
-        btn.setToolTipText(name);
-        
-        btn.setOpaque(false);
-        btn.setContentAreaFilled(false);
-        btn.setBorderPainted(false);
-        btn.setFocusPainted(false);
-        btn.setFocusable(false);
-        btn.setCursor(new Cursor(Cursor.HAND_CURSOR));
-
-        btn.addActionListener(e -> {
-            if (mapID == 1) {
-                window.showPanel(cardName);
-            } else {
-                JOptionPane.showMessageDialog(this, "Khu vực " + name + " đang được phát triển!");
-            }
-            statsPanel.updateStats();
-        });
-
-        buttons.add(new ButtonInfo(btn, x, y, w, h));
-        add(btn);
-    }
-
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
         if (backgroundImage != null) {
-            // Vẽ ảnh nền tràn màn hình
             g.drawImage(backgroundImage, 0, 0, getWidth(), getHeight(), this);
         } else {
-            g.setColor(new Color(135, 206, 235)); // Màu trời xanh nếu thiếu ảnh
+            g.setColor(new Color(135, 206, 235));
             g.fillRect(0, 0, getWidth(), getHeight());
             g.setColor(Color.BLACK);
             g.drawString("Vui lòng đặt ảnh 'world_map.png' vào thư mục 'assets'", 50, 50);
