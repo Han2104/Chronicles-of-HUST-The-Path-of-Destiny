@@ -4,6 +4,7 @@ import com.hust.game.ui.panels.FarmingPanel;
 import com.hust.game.ui.panels.StatsPanel;
 import com.hust.game.ui.panels.WorldMapPanel;
 import com.hust.game.ui.panels.C2Panel;
+import com.hust.game.ui.panels.C2LectureHallPanel;
 
 import javax.swing.*;
 import java.awt.*;
@@ -44,6 +45,7 @@ public class GameWindow extends JFrame {
         WorldMapPanel worldMapPanel = new WorldMapPanel(this, statsPanel);
         FarmingPanel farmingPanel = new FarmingPanel(this, statsPanel);
         C2Panel c2Panel = new C2Panel(this, statsPanel);
+        C2LectureHallPanel c2LectureHallPanel = new C2LectureHallPanel(this, statsPanel);
         com.hust.game.ui.panels.D9Panel d9Panel = new com.hust.game.ui.panels.D9Panel(this, statsPanel);
         com.hust.game.ui.panels.ArenaPanel arenaPanel = new com.hust.game.ui.panels.ArenaPanel(this, statsPanel);
         this.combatPanel = new com.hust.game.ui.panels.CombatPanel(this, statsPanel);
@@ -51,6 +53,7 @@ public class GameWindow extends JFrame {
         registerPanel("WORLD_MAP", worldMapPanel);
         registerPanel("MAP_SONLA", farmingPanel);
         registerPanel("MAP_C2", c2Panel);
+        registerPanel("MAP_C2_HALL", c2LectureHallPanel);
         registerPanel("MAP_D9", d9Panel);
         registerPanel("MAP_B1", arenaPanel);
         registerPanel("COMBAT_SCREEN", combatPanel);
