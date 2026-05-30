@@ -25,9 +25,10 @@ public final class AssetLoader {
 
     public static InputStream openStream(String path) throws IOException {
         String normalizedPath = normalize(path);
-        Path filePath = Paths.get(normalizedPath);
-        if (Files.isRegularFile(filePath)) {
-            return Files.newInputStream(filePath);
+        for (Path candidate : fileCandidates(normalizedPath)) {
+            if (Files.isRegularFile(candidate)) {
+                return Files.newInputStream(candidate);
+            }
         }
 
         ClassLoader loader = Thread.currentThread().getContextClassLoader();
@@ -43,6 +44,32 @@ public final class AssetLoader {
         }
 
         throw new FileNotFoundException("Asset not found: " + normalizedPath);
+    }
+
+    private static List<Path> fileCandidates(String path) {
+        Set<Path> candidates = new LinkedHashSet<>();
+        candidates.add(Paths.get(path));
+
+        addParentCandidates(candidates, Paths.get("").toAbsolutePath().normalize(), path);
+
+        try {
+            Path codePath = Paths.get(AssetLoader.class.getProtectionDomain()
+                    .getCodeSource()
+                    .getLocation()
+                    .toURI()).toAbsolutePath().normalize();
+            addParentCandidates(candidates, Files.isDirectory(codePath) ? codePath : codePath.getParent(), path);
+        } catch (Exception ignored) {
+        }
+
+        return new ArrayList<>(candidates);
+    }
+
+    private static void addParentCandidates(Set<Path> candidates, Path start, String path) {
+        Path current = start;
+        while (current != null) {
+            candidates.add(current.resolve(path).normalize());
+            current = current.getParent();
+        }
     }
 
     public static BufferedImage loadImage(String path) {

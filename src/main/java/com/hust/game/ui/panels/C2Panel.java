@@ -32,13 +32,13 @@ public class C2Panel extends JPanel {
     private static final int PLAYER_W = 54;
     private static final int PLAYER_H = 86;
 
-    private static final Rectangle SHOP_AREA = new Rectangle(150, 250, 300, 260);
-    private static final Rectangle NOTICE_BOARD_AREA = new Rectangle(1045, 330, 210, 180);
-    private static final Rectangle C2_BUILDING_AREA = new Rectangle(1600, 125, 560, 385);
+    private static final Rectangle SHOP_AREA = new Rectangle(200, 236, 272, 232);
+    private static final Rectangle NOTICE_BOARD_AREA = new Rectangle(530, 288, 156, 150);
+    private static final Rectangle C2_BUILDING_AREA = new Rectangle(1360, 280, 140, 220);
 
     private final GameWindow window;
     private final StatsPanel statsPanel;
-    private final TiledC2Map tiledMap;
+    private TiledC2Map tiledMap;
     private final BufferedImage standLeft;
     private final BufferedImage standRight;
     private final BufferedImage standFront;
@@ -65,24 +65,36 @@ public class C2Panel extends JPanel {
     public C2Panel(GameWindow window, StatsPanel statsPanel) {
         this.window = window;
         this.statsPanel = statsPanel;
-        this.tiledMap = TiledC2Map.load(C2_MAP_PATH);
+        reloadC2Map(true);
         this.standLeft = AssetLoader.loadImage("assets/Vu/character_stand_left (1).png");
         this.standRight = AssetLoader.loadImage("assets/Vu/character_stand_right (1).png");
         this.standFront = AssetLoader.loadImage("assets/Vu/character_stand_front (1).png");
         this.standBack = AssetLoader.loadImage("assets/Vu/character_stand_back (1).png");
         loadWalkSprites();
-        applyPlayerSpawn();
         this.animationTimer = new Timer(120, e -> updateWalkAnimation());
 
         setFocusable(true);
+        setLayout(null);
         setBackground(new Color(125, 192, 226));
         setupMovement();
         setupMouseInteraction();
+
+        JButton backButton = new JButton("← Về World Map");
+        backButton.setFont(new Font("Arial", Font.BOLD, 14));
+        backButton.setFocusable(false);
+        backButton.setBounds(10, 10, 160, 34);
+        backButton.addActionListener(e -> {
+            GameManager.getInstance().switchMap(0);
+            window.showPanel("WORLD_MAP");
+        });
+        add(backButton);
+
         animationTimer.start();
 
         addComponentListener(new java.awt.event.ComponentAdapter() {
             @Override
             public void componentShown(java.awt.event.ComponentEvent e) {
+                reloadC2Map(false);
                 requestFocusInWindow();
                 showIntroOnce();
             }
@@ -92,6 +104,33 @@ public class C2Panel extends JPanel {
                 updateCamera();
             }
         });
+    }
+
+    public void onShown() {
+        reloadC2Map(false);
+        updateCamera();
+        repaint();
+        SwingUtilities.invokeLater(() -> {
+            requestFocusInWindow();
+            showIntroOnce();
+        });
+    }
+
+    private void reloadC2Map(boolean resetPlayerToSpawn) {
+        TiledC2Map loadedMap = TiledC2Map.load(C2_MAP_PATH);
+        if (loadedMap == null) {
+            return;
+        }
+
+        boolean hadMap = tiledMap != null;
+        tiledMap = loadedMap;
+        if (resetPlayerToSpawn || !hadMap) {
+            applyPlayerSpawn();
+        } else {
+            playerX = Math.max(40, Math.min(getWorldWidth() - PLAYER_W - 40, playerX));
+            playerY = Math.max(40, Math.min(getWorldHeight() - PLAYER_H - 20, playerY));
+        }
+        updateCamera();
     }
 
     private void loadWalkSprites() {
@@ -278,7 +317,7 @@ public class C2Panel extends JPanel {
     }
 
     private Rectangle getC2BuildingArea() {
-        return getMapObjectArea("C2", "C2Building", C2_BUILDING_AREA);
+        return getMapObjectArea("bachkhoa", "bachkhoa", C2_BUILDING_AREA);
     }
 
     private Rectangle getMapObjectArea(String name, String type, Rectangle fallback) {
@@ -316,12 +355,12 @@ public class C2Panel extends JPanel {
             return;
         }
 
-        int choice = JOptionPane.showConfirmDialog(this,
-                "Tòa C2 đang diễn ra buổi sinh hoạt công dân.\n\nBạn có muốn vào hội trường để làm quiz kiếm điểm rèn luyện không?",
-                "Tòa C2",
-                JOptionPane.YES_NO_OPTION,
-                JOptionPane.QUESTION_MESSAGE);
-        if (choice == JOptionPane.YES_OPTION) {
+        ConfirmDialog confirm = new ConfirmDialog(SwingUtilities.getWindowAncestor(this), "Tòa C2",
+                "Tòa C2 đang diễn ra buổi sinh hoạt công dân do đại học tổ chức\n"
+                        + "dành cho toàn bộ sinh viên năm nhất của Trường CNTT & TT.\n\n"
+                        + "Bạn có muốn tham gia không?");
+        confirm.setVisible(true);
+        if (confirm.isConfirmed()) {
             window.showPanel("MAP_C2_HALL");
         }
     }
@@ -883,7 +922,7 @@ public class C2Panel extends JPanel {
                         if (bounds.width > 0 && bounds.height > 0) {
                             String objectType = type == null || type.isBlank() ? groupName : type;
                             map.objects.add(new MapObject(name, objectType, bounds));
-                            if (collisionGroup) {
+                            if (collisionGroup && !isPassThroughObject(groupName, name, type)) {
                                 map.collisionBoxes.add(bounds);
                             }
                         }
@@ -924,7 +963,14 @@ public class C2Panel extends JPanel {
                     || "obstacle".equalsIgnoreCase(groupName)
                     || "shop".equalsIgnoreCase(groupName)
                     || "notice".equalsIgnoreCase(groupName)
+                    || "bachkhoa".equalsIgnoreCase(groupName)
                     || "c2".equalsIgnoreCase(groupName);
+        }
+
+        private static boolean isPassThroughObject(String groupName, String name, String type) {
+            return "chodiqua".equalsIgnoreCase(groupName)
+                    || "chodiqua".equalsIgnoreCase(name)
+                    || "chodiqua".equalsIgnoreCase(type);
         }
 
         private static Rectangle parseObjectBounds(Element objectElement, int tileWidth, int tileHeight) {
@@ -1048,12 +1094,18 @@ public class C2Panel extends JPanel {
         }
 
         Rectangle findObject(String name, String type) {
+            Rectangle bestMatch = null;
+            int bestArea = -1;
             for (MapObject object : objects) {
                 if (name.equalsIgnoreCase(object.name) || type.equalsIgnoreCase(object.type)) {
-                    return object.bounds;
+                    int area = object.bounds.width * object.bounds.height;
+                    if (area > bestArea) {
+                        bestArea = area;
+                        bestMatch = object.bounds;
+                    }
                 }
             }
-            return null;
+            return bestMatch;
         }
 
         private static int parseInt(String value, int fallback) {
@@ -1106,6 +1158,72 @@ public class C2Panel extends JPanel {
             setSize(650, 430);
             setLocationRelativeTo(owner);
             setContentPane(new NoticePanel(title, message, this::dispose));
+        }
+    }
+
+    private static class ConfirmDialog extends JDialog {
+        private boolean confirmed = false;
+
+        ConfirmDialog(Window owner, String title, String message) {
+            super(owner, title, ModalityType.APPLICATION_MODAL);
+            setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+            setSize(620, 340);
+            setLocationRelativeTo(owner);
+            setContentPane(buildPanel(title, message));
+        }
+
+        boolean isConfirmed() { return confirmed; }
+
+        private JPanel buildPanel(String title, String message) {
+            JPanel panel = new JPanel(null) {
+                @Override
+                protected void paintComponent(Graphics g) {
+                    super.paintComponent(g);
+                    Graphics2D g2d = (Graphics2D) g.create();
+                    g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+                    g2d.setColor(new Color(11, 44, 70));
+                    g2d.fillRect(0, 0, getWidth(), getHeight());
+                    g2d.setColor(new Color(25, 99, 139));
+                    g2d.fill(new RoundRectangle2D.Double(16, 14, getWidth() - 32, getHeight() - 28, 18, 18));
+                    g2d.setColor(new Color(7, 31, 55));
+                    g2d.fill(new RoundRectangle2D.Double(36, 58, getWidth() - 72, 140, 12, 12));
+                    g2d.setColor(new Color(117, 205, 241));
+                    g2d.setStroke(new BasicStroke(3f));
+                    g2d.draw(new RoundRectangle2D.Double(16, 14, getWidth() - 32, getHeight() - 28, 18, 18));
+                    g2d.setColor(new Color(255, 170, 66));
+                    g2d.setFont(new Font("Arial", Font.BOLD, 26));
+                    FontMetrics fm = g2d.getFontMetrics();
+                    g2d.drawString(title.toUpperCase(), (getWidth() - fm.stringWidth(title.toUpperCase())) / 2, 46);
+                    g2d.dispose();
+                }
+            };
+
+            JTextArea text = new JTextArea(message);
+            text.setEditable(false);
+            text.setLineWrap(true);
+            text.setWrapStyleWord(true);
+            text.setOpaque(false);
+            text.setForeground(Color.WHITE);
+            text.setFont(new Font("Arial", Font.BOLD, 15));
+            text.setBounds(48, 66, getWidth() - 96, 128);
+            panel.add(text);
+
+            JButton yesBtn = makeConfirmBtn("✔  Có, tham gia", null);
+            JButton noBtn  = makeConfirmBtn("✖  Không", null);
+            yesBtn.addActionListener(e -> { confirmed = true; dispose(); });
+            noBtn.addActionListener(e -> dispose());
+            yesBtn.setBounds(110, 212, 170, 40);
+            noBtn.setBounds(330, 212, 170, 40);
+            panel.add(yesBtn);
+            panel.add(noBtn);
+            return panel;
+        }
+
+        private static JButton makeConfirmBtn(String label, Color bg) {
+            JButton btn = new JButton(label);
+            btn.setFont(new Font("Arial", Font.BOLD, 14));
+            btn.setFocusPainted(false);
+            return btn;
         }
     }
 
@@ -1223,12 +1341,13 @@ public class C2Panel extends JPanel {
             questionText.setBorder(BorderFactory.createEmptyBorder(14, 14, 14, 14));
             root.add(questionText, BorderLayout.CENTER);
 
-            JPanel answers = new JPanel(new GridLayout(4, 1, 8, 8));
+            JPanel answers = new JPanel(new GridLayout(4, 1, 6, 6));
             answers.setOpaque(false);
             for (int i = 0; i < answerButtons.length; i++) {
                 final int selected = i;
                 answerButtons[i] = new JButton();
-                answerButtons[i].setFont(new Font("Arial", Font.BOLD, 15));
+                answerButtons[i].setFont(new Font("Arial", Font.BOLD, 14));
+                answerButtons[i].setFocusPainted(false);
                 answerButtons[i].addActionListener(e -> answer(selected));
                 answers.add(answerButtons[i]);
             }
@@ -1258,10 +1377,8 @@ public class C2Panel extends JPanel {
             }
 
             passed = correct == questions.length;
-            JOptionPane.showMessageDialog(this,
-                    "Bạn đã trả lời đúng " + correct + "/" + questions.length + " câu.",
-                    "Kết quả",
-                    passed ? JOptionPane.INFORMATION_MESSAGE : JOptionPane.WARNING_MESSAGE);
+            new NoticeDialog(this, "Kết Quả",
+                    "Bạn đã trả lời đúng " + correct + "/" + questions.length + " câu.").setVisible(true);
             dispose();
         }
 

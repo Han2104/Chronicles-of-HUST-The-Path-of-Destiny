@@ -93,6 +93,8 @@ public class GameWindow extends JFrame {
         if (panel instanceof com.hust.game.ui.panels.D9Panel) {
             ((com.hust.game.ui.panels.D9Panel) panel).onShown();
             SwingUtilities.invokeLater(panel::requestFocusInWindow);
+        } else if (panel instanceof C2Panel) {
+            ((C2Panel) panel).onShown();
         } else if (panel != null) {
             panel.requestFocusInWindow();
         }

@@ -7,6 +7,7 @@ import com.hust.game.util.AssetLoader;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.geom.RoundRectangle2D;
 import java.awt.image.BufferedImage;
 
 /**
@@ -70,10 +71,8 @@ public class C2LectureHallPanel extends JPanel {
     private void startCitizenActivityQuiz() {
         Player player = GameManager.getInstance().getPlayer();
         if (player.isCompletedMap2()) {
-            JOptionPane.showMessageDialog(this,
-                    "Bạn đã hoàn thành buổi sinh hoạt công dân và đã nhận điểm rèn luyện.",
-                    "C2",
-                    JOptionPane.INFORMATION_MESSAGE);
+            new StyledNoticeDialog(SwingUtilities.getWindowAncestor(this), "C2",
+                    "Bạn đã hoàn thành buổi sinh hoạt công dân và đã nhận điểm rèn luyện.").setVisible(true);
             return;
         }
 
@@ -83,15 +82,11 @@ public class C2LectureHallPanel extends JPanel {
             player.addDisciplineScore(90);
             player.setCompletedMap2(true);
             statsPanel.updateStats();
-            JOptionPane.showMessageDialog(this,
-                    "Chúc mừng bạn đã trả lời đúng 5/5 câu hỏi.\n\nBạn đã có 90 điểm rèn luyện.",
-                    "Hoàn Thành",
-                    JOptionPane.INFORMATION_MESSAGE);
+            new StyledNoticeDialog(SwingUtilities.getWindowAncestor(this), "Hoàn Thành",
+                    "Chúc mừng bạn đã trả lời đúng 5/5 câu hỏi.\n\nBạn đã có 90 điểm rèn luyện.").setVisible(true);
         } else {
-            JOptionPane.showMessageDialog(this,
-                    "Bạn cần trả lời đúng toàn bộ 5 câu hỏi để hoàn thành buổi sinh hoạt công dân. Hãy thử lại.",
-                    "Chưa Hoàn Thành",
-                    JOptionPane.WARNING_MESSAGE);
+            new StyledNoticeDialog(SwingUtilities.getWindowAncestor(this), "Chưa Hoàn Thành",
+                    "Bạn cần trả lời đúng toàn bộ 5 câu hỏi để hoàn thành buổi sinh hoạt công dân. Hãy thử lại.").setVisible(true);
         }
         requestFocusInWindow();
     }
@@ -317,10 +312,8 @@ public class C2LectureHallPanel extends JPanel {
             }
 
             passed = correct == questions.length;
-            JOptionPane.showMessageDialog(this,
-                    "Bạn đã trả lời đúng " + correct + "/" + questions.length + " câu.",
-                    "Kết quả",
-                    passed ? JOptionPane.INFORMATION_MESSAGE : JOptionPane.WARNING_MESSAGE);
+            new StyledNoticeDialog(this, "Kết Quả",
+                    "Bạn đã trả lời đúng " + correct + "/" + questions.length + " câu.").setVisible(true);
             dispose();
         }
 
@@ -351,6 +344,69 @@ public class C2LectureHallPanel extends JPanel {
                 this.options = options;
                 this.correctIndex = correctIndex;
             }
+        }
+    }
+
+    private static class StyledNoticeDialog extends JDialog {
+        StyledNoticeDialog(Window owner, String title, String message) {
+            super(owner, title, ModalityType.APPLICATION_MODAL);
+            setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+            setSize(650, 430);
+            setLocationRelativeTo(owner);
+            setContentPane(new StyledNoticePanel(title, message, this::dispose));
+        }
+    }
+
+    private static class StyledNoticePanel extends JPanel {
+        private final String title;
+        private final JTextArea messageArea = new JTextArea();
+
+        StyledNoticePanel(String title, String message, Runnable closeAction) {
+            this.title = title;
+            setLayout(null);
+            messageArea.setText(message);
+            messageArea.setOpaque(false);
+            messageArea.setEditable(false);
+            messageArea.setLineWrap(true);
+            messageArea.setWrapStyleWord(true);
+            messageArea.setForeground(new Color(245, 250, 255));
+            messageArea.setFont(new Font("Arial", Font.BOLD, 17));
+            add(messageArea);
+
+            JButton okButton = new JButton("Có");
+            okButton.setFont(new Font("Arial", Font.BOLD, 16));
+            okButton.setFocusPainted(false);
+            okButton.addActionListener(e -> closeAction.run());
+            add(okButton);
+        }
+
+        @Override
+        public void doLayout() {
+            messageArea.setBounds(66, 96, getWidth() - 132, getHeight() - 178);
+            Component button = getComponent(1);
+            button.setBounds(getWidth() / 2 - 48, getHeight() - 66, 96, 34);
+        }
+
+        @Override
+        protected void paintComponent(Graphics g) {
+            super.paintComponent(g);
+            Graphics2D g2d = (Graphics2D) g.create();
+            g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+            g2d.setColor(new Color(11, 44, 70));
+            g2d.fillRect(0, 0, getWidth(), getHeight());
+            g2d.setColor(new Color(25, 99, 139));
+            g2d.fill(new RoundRectangle2D.Double(24, 20, getWidth() - 48, getHeight() - 44, 22, 22));
+            g2d.setColor(new Color(7, 31, 55));
+            g2d.fill(new RoundRectangle2D.Double(46, 72, getWidth() - 92, getHeight() - 142, 14, 14));
+            g2d.setColor(new Color(117, 205, 241));
+            g2d.setStroke(new BasicStroke(4f));
+            g2d.draw(new RoundRectangle2D.Double(24, 20, getWidth() - 48, getHeight() - 44, 22, 22));
+            g2d.draw(new RoundRectangle2D.Double(46, 72, getWidth() - 92, getHeight() - 142, 14, 14));
+            g2d.setColor(new Color(255, 170, 66));
+            g2d.setFont(new Font("Arial", Font.BOLD, 30));
+            FontMetrics fm = g2d.getFontMetrics();
+            g2d.drawString(title.toUpperCase(), (getWidth() - fm.stringWidth(title.toUpperCase())) / 2, 52);
+            g2d.dispose();
         }
     }
 }
