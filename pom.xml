@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.hust.game</groupId>
-    <artifactId>Chronicles-of-HUST</artifactId>
+    <artifactId>chronicles-of-hust</artifactId>
     <version>1.0-SNAPSHOT</version>
 
     <properties>
@@ -23,12 +23,9 @@
         </resources>
         <plugins>
             <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>exec-maven-plugin</artifactId>
-                <version>3.1.0</version>
-                <configuration>
-                    <mainClass>com.hust.game.Main</mainClass>
-                </configuration>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.11.0</version>
             </plugin>
         </plugins>
     </build>

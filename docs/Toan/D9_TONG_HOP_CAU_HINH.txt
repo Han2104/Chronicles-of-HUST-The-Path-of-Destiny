@@ -1,0 +1,241 @@
+D9 - TỔNG HỢP CẤU HÌNH VÀ TRIỂN KHAI
+Ngay cap nhat: 2026-05-08
+
+1. Duong dan chinh
+- TMX map: assets/Map/D9/d9_map.tmx
+- Tilesets: assets/Map/D9/d9_tileset.tsx, d9_tileset2.tsx, d9_tileset3.tsx, d9_tileset4.tsx
+- Sprite nhan vat: assets/Vu/
+- Question bank: assets/Data/questions/oop_questions.json
+- Panel gameplay: src/main/java/com/hust/game/ui/panels/D9Panel.java
+- Loader: src/main/java/com/hust/game/maps/d9/D9MapLoader.java
+
+15. Tileset 4 và cơ chế nhiều tileset
+- `d9_tileset4.tsx` và `d9_tileset4.png` là tài sản hợp lệ và được hỗ trợ.
+- Loader hiện nay đọc tất cả `<tileset>` trong TMX và tải mỗi TSX nghe theo `source="..."`.
+- Nếu TSX chứa đường dẫn Windows absolute, loader sẽ tìm fallback file tương ứng trong `assets/Map/D9/`.
+- Hình ảnh trong TSX được giải quyết tương đối theo thư mục TSX hiện tại.
+- `firstgid` được dùng để xác định tileset chứa mỗi `gid`.
+- `gid=0` được xem là tile trống, không render và không tạo collision.
+- Các gid không tìm được hoặc out-of-range được bỏ qua và in cảnh báo một lần mỗi gid.
+- Code không hardcode chỉ ba tileset; bất kỳ số lượng TSX nào cũng được hỗ trợ.
+- File `*:Zone.Identifier` đã bị xóa và không được xem là asset.
+
+2. Layer trong Tiled
+Render theo thu tu:
+- Background
+- Platforms
+- Decor
+- FloorDivider
+- Checkpoints
+
+Layer Objects chi dung de doc object gameplay, khong render nhu tile layer.
+
+3. Platforms collision
+Chi layer Platforms sinh va cham san.
+Moi tile khong rong trong Platforms tao 1 rectangle:
+- x = tileX * tileWidth
+- y = tileY * tileHeight
+- width = tileWidth
+- height = tileHeight
+
+Loader hien ho tro CSV data trong TMX. Neu gap encoding khong ho tro, loader in warning ro rang va tra layer rong an toan.
+TMX hien tai co 602 tile khong rong trong Platforms. Floor 1 co platform khoi dau gan spawn_floor_1 trong layer Platforms.
+
+4. Object parsing
+Object layer can ten la Objects.
+Loader ho tro class cua Tiled luu bang cac attribute:
+- class
+- type
+- classType
+
+Object duoc doc:
+- name
+- class/type
+- x
+- y
+- width
+- height
+- custom properties int/bool/string
+
+Class duoc nhan dien:
+- PlayerSpawn
+- Checkpoint
+- QuizDoor
+- FinalQuizDoor
+- FloorDivider
+- MapBoundary
+
+5. PlayerSpawn va spawn snapping
+Spawn chinh:
+- name = spawn_floor_1
+- class/type = PlayerSpawn
+- floor = 1
+- spawnId = spawn_1
+- direction = right
+
+TMX hien co property bi go nham la spawId. Code chap nhan spawId nhu fallback cho spawnId va in warning.
+
+Nguoi choi khong dung raw top-left cua spawn object. Code xem spawn_floor_1 nhu spawn zone, lay tam hitbox theo zone, roi snap day hitbox xuong platform gan nhat nam ben duoi zone. Neu khong co platform ben duoi, dung platform an toan gan nhat. Neu khong co platform nao, in warning va dung fallback khong crash.
+Neu Tiled co nhieu object cung ten spawn_floor_1, code in warning va chon spawn zone co platform floor-1 phu hop nhat, uu tien zone gan mat san dung cua tang 1.
+Debug draw F3 co the giup xac minh rect spawn, platform va hitbox co khop nhau hay khong.
+
+6. Physics va hitbox
+Nhan vat dung gameplay hitbox rieng, khong dung kich thuoc sprite 450x450.
+Hitbox mac dinh:
+- width = 34
+- height = 58
+
+Sprite duoc ve can theo day hitbox de chan nhan vat khop voi san.
+Camera chi anh huong render, khong anh huong world collision.
+
+Physics:
+- gravity = 0.45
+- maxFallSpeed = 12.0
+- moveSpeed = 3.2
+- Jump King style: hold Space de CHARGE, release Space de JUMP, land ve STAND
+- Jump chi xay ra khi keyReleased Space, khong jump ngay khi keyPressed
+- Y axis tang xuong duoi, nen velocityY khi jump phai am
+- Khi roi, collision dung sweep previousBottom <= platformTop && nextBottom >= platformTop de giam tunneling
+
+7. MapBoundary
+MapBoundary object trong Objects layer duoc chuyen thanh solid boundary collision.
+TMX hien tai da co explicit MapBoundary objects, luu bang attribute type="MapBoundary":
+- map_bound_left, side=left, solid=true
+- map_bound_right, side=right, solid=true
+- map_bound_top, side=top, solid=true
+- map_bound_bottom, side=bottom, solid=true
+
+Code uu tien explicit MapBoundary tu TMX. Neu mot side bi thieu trong lan sua Tiled sau nay, chi side do moi duoc tao fallback tu kich thuoc map:
+- left: x=-32, y=0, w=32, h=mapHeightPx
+- right: x=mapWidthPx, y=0, w=32, h=mapHeightPx
+- top: x=0, y=-32, w=mapWidthPx, h=32
+- bottom: x=0, y=mapHeightPx, w=mapWidthPx, h=64
+
+map_bound_bottom la bien day cua map trong Objects layer, khong thay the platform tang 1. Platform gameplay van phai nam trong Platforms layer.
+
+8. Checkpoints
+Checkpoint duoc index bang checkpointId:
+- cp_2
+- cp_3
+- cp_4
+- cp_5
+- cp_6
+- cp_7
+
+Khi teleport den checkpoint, code snap hitbox xuong platform gan nhat cua checkpoint zone de tranh roi tu toa do raw.
+
+9. QuizDoor
+QuizDoor tang 1 den 6 doc cac property:
+- floor
+- targetFloor
+- questionSet
+- questionCount
+- requiredCorrect
+- successCheckpoint
+- punishment
+
+Khi hitbox nguoi choi giao voi door:
+- dung movement/control
+- dung timer gameplay trong luc quiz
+- mo D9 quiz dialog
+- chon questionCount cau khong trung nhau
+- neu correct >= requiredCorrect thi teleport den successCheckpoint
+- neu fail thi ap dung punishment
+
+Punishment:
+- FallToFloorStart: ve spawn_floor_1
+- FallToCheckpoint: ve checkpoint cua tang hien tai hoac checkpoint gan truoc do
+
+Door khong trigger moi frame vi co activeQuizDoor va chi reset khi nguoi choi roi trigger area.
+
+10. FinalQuizDoor
+FinalQuizDoor dung questionSet oop_final.
+Mac dinh:
+- questionCount = 5
+- requiredCorrect = 4
+- punishment = FallOneFloor
+- onSuccess = ShowVictoryMessage
+
+Neu pass, hien victoryMessage.
+Neu fail, dua nguoi choi ve checkpoint/safe platform cua tang truoc.
+
+11. Question bank
+Question bank nam tai assets/Data/questions/oop_questions.json.
+Cac set bat buoc:
+- oop_floor_1
+- oop_floor_2
+- oop_floor_3
+- oop_floor_4
+- oop_floor_5
+- oop_floor_6
+- oop_final
+
+Moi cau hoi gom:
+- id
+- topic
+- difficulty
+- question
+- options
+- answerIndex
+- explanation
+
+Code dung parser JSON toi thieu san co, khong them dependency nang.
+
+12. Debug logs va debug draw
+Loader in:
+- [D9] Loading map: assets/Map/D9/d9_map.tmx
+- [D9] Map size: ...
+- [D9] Tile size: ...
+- [D9] Platforms layer found: true/false
+- [D9] Platform tiles found: X
+- [D9] Platform collision rectangles created: X
+- [D9] Explicit MapBoundary objects found: X
+- [D9] Missing boundary sides: ...
+- [D9] Fallback boundaries created for sides: ...
+- [D9] Boundary collision rectangles created: X
+- [D9] Total solid collisions: X
+
+Spawn in:
+- [D9Spawn] PlayerSpawn candidates: ...
+- [D9Spawn] selected spawn_floor_1 at ...
+- [D9] Platforms near spawn: X
+- [D9] Nearest platform under spawn: ...
+- [D9] Player snapped to platform: true/false
+- [D9] Player initial world position: ...
+- [D9] Player hitbox: ...
+- [D9Input] keyPressed SPACE / keyReleased SPACE
+- [D9Input] start charge
+- [D9Input] release jump with power=...
+- [D9Input] jump blocked reason=...
+
+F3 toggle debug draw.
+Debug draw ve:
+- platform collision rectangles
+- explicit MapBoundary rectangles
+- fallback boundary rectangles neu co
+- player hitbox
+- spawn_floor_1 rectangle
+- quiz door rectangles
+- selected spawn marker va selected platform duoi spawn
+
+13. Navigation va map unlock
+Khong co unlock restriction moi.
+Tat ca map mo tu dau:
+- SonLa
+- C2
+- D9
+- B1
+
+D9 mo qua MAP_D9 tu world map/menu.
+
+14. Build va run
+Build Maven neu co:
+mvn -q -DskipTests package
+
+Run Maven:
+mvn exec:java
+
+Fallback neu khong co Maven:
+mkdir -p bin
+javac -d bin $(find src/main/java -name "*.java")
+java -cp bin com.hust.game.Main

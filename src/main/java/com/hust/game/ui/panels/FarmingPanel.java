@@ -3,11 +3,10 @@ package com.hust.game.ui.panels;
 import com.hust.game.maps.sonla.SonLaMap;
 import com.hust.game.models.items.Seed;
 import com.hust.game.ui.GameWindow;
+import com.hust.game.util.AssetLoader;
 
 import javax.swing.*;
 import java.awt.*;
-import java.io.File;
-import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 
 /**
@@ -34,11 +33,7 @@ public class FarmingPanel extends JPanel {
 
         setLayout(null); 
 
-        try {
-            backgroundImage = ImageIO.read(new File("assets/sonla_map.png"));
-        } catch (Exception e) {
-            System.err.println("❌ Lỗi: Không tìm thấy assets/sonla_map.png");
-        }
+        backgroundImage = AssetLoader.loadImage("assets/sonla_map.png");
 
         // 1. Nút quay lại
         btnBack = new JButton("⬅ Về World Map");

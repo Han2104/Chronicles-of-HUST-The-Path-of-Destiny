@@ -16,11 +16,12 @@ public class GameManager {
     private int currentHour = 8;
     private int currentMapID = 0; // 0: World Map
     private int cityRegenCounter = 0;
-    private long lastLazySpawnTime = 0;
     private long lastEscapeTime = 0;
     private int tickCount = 0;
 
     public void triggerLazyEncounter() {
+        return;
+/*
         if (currentMapID != 2) return;
         
         long now = System.currentTimeMillis();
@@ -42,6 +43,7 @@ public class GameManager {
             com.hust.game.ui.panels.LazyEncounterDialog dialog = new com.hust.game.ui.panels.LazyEncounterDialog(window, statsPanel, npc);
             dialog.setVisible(true);
         });
+*/
     }
 
     public long getLastEscapeTime() { return lastEscapeTime; }
@@ -150,7 +152,6 @@ public class GameManager {
             }
 
             if (statsPanel != null) statsPanel.updateStats();
-            triggerLazyEncounter();
         });
         energyRegenTimer.start();
     }
