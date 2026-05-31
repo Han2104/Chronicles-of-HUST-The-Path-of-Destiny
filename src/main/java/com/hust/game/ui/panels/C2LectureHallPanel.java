@@ -30,15 +30,30 @@ public class C2LectureHallPanel extends JPanel {
     }
 
     private void buildControls() {
-        JPanel bottomBar = new JPanel(new FlowLayout(FlowLayout.CENTER, 14, 12));
-        bottomBar.setOpaque(false);
+        JPanel bottomBar = new JPanel(new FlowLayout(FlowLayout.CENTER, 20, 14));
+        bottomBar.setBackground(new Color(10, 20, 35, 210));
+        bottomBar.setOpaque(true);
 
-        JButton backButton = new JButton("Quay lại sân C2");
-        backButton.setFont(new Font("Arial", Font.BOLD, 15));
+        JButton backButton = new JButton("← Quay lại sân C2");
+        backButton.setFont(new Font("Arial", Font.BOLD, 14));
+        backButton.setBackground(new Color(70, 70, 85));
+        backButton.setForeground(Color.WHITE);
+        backButton.setOpaque(true);
+        backButton.setBorderPainted(false);
+        backButton.setFocusPainted(false);
+        backButton.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        backButton.setPreferredSize(new Dimension(180, 42));
         backButton.addActionListener(e -> window.showPanel("MAP_C2"));
 
-        JButton quizButton = new JButton("Bắt đầu trắc nghiệm");
-        quizButton.setFont(new Font("Arial", Font.BOLD, 16));
+        JButton quizButton = new JButton("Bắt đầu trắc nghiệm →");
+        quizButton.setFont(new Font("Arial", Font.BOLD, 15));
+        quizButton.setBackground(new Color(39, 174, 96));
+        quizButton.setForeground(Color.WHITE);
+        quizButton.setOpaque(true);
+        quizButton.setBorderPainted(false);
+        quizButton.setFocusPainted(false);
+        quizButton.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        quizButton.setPreferredSize(new Dimension(220, 42));
         quizButton.addActionListener(e -> startCitizenActivityQuiz());
 
         bottomBar.add(backButton);
@@ -215,12 +230,20 @@ public class C2LectureHallPanel extends JPanel {
             questionText.setBorder(BorderFactory.createEmptyBorder(14, 14, 14, 14));
             root.add(questionText, BorderLayout.CENTER);
 
-            JPanel answers = new JPanel(new GridLayout(4, 1, 8, 8));
+            JPanel answers = new JPanel(new GridLayout(4, 1, 6, 6));
             answers.setOpaque(false);
             for (int i = 0; i < answerButtons.length; i++) {
                 final int selected = i;
                 answerButtons[i] = new JButton();
-                answerButtons[i].setFont(new Font("Arial", Font.BOLD, 15));
+                answerButtons[i].setFont(new Font("Arial", Font.BOLD, 14));
+                answerButtons[i].setBackground(new Color(25, 80, 130));
+                answerButtons[i].setForeground(Color.WHITE);
+                answerButtons[i].setOpaque(true);
+                answerButtons[i].setBorderPainted(false);
+                answerButtons[i].setFocusPainted(false);
+                answerButtons[i].setCursor(new Cursor(Cursor.HAND_CURSOR));
+                answerButtons[i].setHorizontalAlignment(SwingConstants.LEFT);
+                answerButtons[i].setBorder(BorderFactory.createEmptyBorder(4, 14, 4, 14));
                 answerButtons[i].addActionListener(e -> answer(selected));
                 answers.add(answerButtons[i]);
             }
@@ -373,9 +396,14 @@ public class C2LectureHallPanel extends JPanel {
             messageArea.setFont(new Font("Arial", Font.BOLD, 17));
             add(messageArea);
 
-            JButton okButton = new JButton("Có");
-            okButton.setFont(new Font("Arial", Font.BOLD, 16));
+            JButton okButton = new JButton("Đóng");
+            okButton.setFont(new Font("Arial", Font.BOLD, 15));
+            okButton.setBackground(new Color(25, 99, 139));
+            okButton.setForeground(Color.WHITE);
+            okButton.setOpaque(true);
+            okButton.setBorderPainted(false);
             okButton.setFocusPainted(false);
+            okButton.setCursor(new Cursor(Cursor.HAND_CURSOR));
             okButton.addActionListener(e -> closeAction.run());
             add(okButton);
         }
@@ -384,7 +412,7 @@ public class C2LectureHallPanel extends JPanel {
         public void doLayout() {
             messageArea.setBounds(66, 96, getWidth() - 132, getHeight() - 178);
             Component button = getComponent(1);
-            button.setBounds(getWidth() / 2 - 48, getHeight() - 66, 96, 34);
+            button.setBounds(getWidth() / 2 - 56, getHeight() - 66, 112, 38);
         }
 
         @Override

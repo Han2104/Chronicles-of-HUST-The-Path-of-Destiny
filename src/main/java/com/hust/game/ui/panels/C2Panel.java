@@ -1,12 +1,20 @@
 package com.hust.game.ui.panels;
 
-import com.hust.game.core.GameManager;
-import com.hust.game.models.entities.Player;
-import com.hust.game.ui.GameWindow;
-import com.hust.game.util.AssetLoader;
-
-import javax.swing.*;
-import java.awt.*;
+import java.awt.BasicStroke;
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.Font;
+import java.awt.FontMetrics;
+import java.awt.GradientPaint;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.GridLayout;
+import java.awt.Point;
+import java.awt.Polygon;
+import java.awt.Rectangle;
+import java.awt.RenderingHints;
+import java.awt.Window;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.geom.RoundRectangle2D;
@@ -15,11 +23,30 @@ import java.awt.image.ImageObserver;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.swing.AbstractAction;
+import javax.swing.ActionMap;
+import javax.swing.BorderFactory;
+import javax.swing.InputMap;
+import javax.swing.JButton;
+import javax.swing.JDialog;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JTextArea;
+import javax.swing.KeyStroke;
+import javax.swing.SwingUtilities;
+import javax.swing.Timer;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
+
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
+
+import com.hust.game.core.GameManager;
+import com.hust.game.models.entities.Player;
+import com.hust.game.ui.GameWindow;
+import com.hust.game.util.AssetLoader;
 
 /**
  * C2Panel - Map C2 dạng side-scrolling: bảng tin, cửa hàng, tượng đài và tòa C2.
@@ -224,8 +251,7 @@ public class C2Panel extends JPanel {
                 } else if (getC2BuildingArea().contains(worldPoint)) {
                     handleC2Building();
                 } else if (getShopArea().contains(worldPoint)) {
-                    ShopDialog dialog = new ShopDialog((Frame) SwingUtilities.getWindowAncestor(C2Panel.this), statsPanel);
-                    dialog.setVisible(true);
+                    handleShopEntrance();
                 }
             }
         });
@@ -362,6 +388,16 @@ public class C2Panel extends JPanel {
         confirm.setVisible(true);
         if (confirm.isConfirmed()) {
             window.showPanel("MAP_C2_HALL");
+        }
+    }
+
+    private void handleShopEntrance() {
+        ConfirmDialog confirm = new ConfirmDialog(SwingUtilities.getWindowAncestor(this),
+                "Quán Căn Tin CF",
+                "Bạn có muốn làm việc tại quán CF không?\n\nMức lương: 100,000đ / ngày");
+        confirm.setVisible(true);
+        if (confirm.isConfirmed()) {
+            window.showPanel("MAP_CF");
         }
     }
 
@@ -1208,12 +1244,12 @@ public class C2Panel extends JPanel {
             text.setBounds(48, 66, getWidth() - 96, 128);
             panel.add(text);
 
-            JButton yesBtn = makeConfirmBtn("✔  Có, tham gia", null);
-            JButton noBtn  = makeConfirmBtn("✖  Không", null);
+            JButton yesBtn = makeConfirmBtn("Có", new Color(39, 174, 96));
+            JButton noBtn  = makeConfirmBtn("Không", new Color(192, 57, 43));
             yesBtn.addActionListener(e -> { confirmed = true; dispose(); });
             noBtn.addActionListener(e -> dispose());
-            yesBtn.setBounds(110, 212, 170, 40);
-            noBtn.setBounds(330, 212, 170, 40);
+            yesBtn.setBounds(110, 214, 160, 42);
+            noBtn.setBounds(330, 214, 160, 42);
             panel.add(yesBtn);
             panel.add(noBtn);
             return panel;
@@ -1221,8 +1257,13 @@ public class C2Panel extends JPanel {
 
         private static JButton makeConfirmBtn(String label, Color bg) {
             JButton btn = new JButton(label);
-            btn.setFont(new Font("Arial", Font.BOLD, 14));
+            btn.setFont(new Font("Arial", Font.BOLD, 15));
+            btn.setBackground(bg);
+            btn.setForeground(Color.WHITE);
+            btn.setOpaque(true);
+            btn.setBorderPainted(false);
             btn.setFocusPainted(false);
+            btn.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
             return btn;
         }
     }
@@ -1245,8 +1286,14 @@ public class C2Panel extends JPanel {
             messageArea.setFont(new Font("Arial", Font.BOLD, 17));
             add(messageArea);
 
-            JButton okButton = new JButton("Có");
-            okButton.setFont(new Font("Arial", Font.BOLD, 16));
+            JButton okButton = new JButton("Đóng");
+            okButton.setFont(new Font("Arial", Font.BOLD, 15));
+            okButton.setBackground(new Color(25, 99, 139));
+            okButton.setForeground(Color.WHITE);
+            okButton.setOpaque(true);
+            okButton.setBorderPainted(false);
+            okButton.setFocusPainted(false);
+            okButton.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
             okButton.addActionListener(e -> closeAction.run());
             add(okButton);
         }

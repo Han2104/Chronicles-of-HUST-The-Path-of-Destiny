@@ -5,6 +5,7 @@ import com.hust.game.ui.panels.StatsPanel;
 import com.hust.game.ui.panels.WorldMapPanel;
 import com.hust.game.ui.panels.C2Panel;
 import com.hust.game.ui.panels.C2LectureHallPanel;
+import com.hust.game.ui.panels.CFPanel;
 
 import javax.swing.*;
 import java.awt.*;
@@ -49,6 +50,7 @@ public class GameWindow extends JFrame {
         com.hust.game.ui.panels.D9Panel d9Panel = new com.hust.game.ui.panels.D9Panel(this, statsPanel);
         com.hust.game.ui.panels.ArenaPanel arenaPanel = new com.hust.game.ui.panels.ArenaPanel(this, statsPanel);
         this.combatPanel = new com.hust.game.ui.panels.CombatPanel(this, statsPanel);
+        CFPanel cfPanel = new CFPanel(this, statsPanel);
 
         registerPanel("WORLD_MAP", worldMapPanel);
         registerPanel("MAP_SONLA", farmingPanel);
@@ -57,6 +59,7 @@ public class GameWindow extends JFrame {
         registerPanel("MAP_D9", d9Panel);
         registerPanel("MAP_B1", arenaPanel);
         registerPanel("COMBAT_SCREEN", combatPanel);
+        registerPanel("MAP_CF", cfPanel);
         
         // Tạm thời để MAP_LIBRARY trỏ về D9 hoặc tạo panel mới nếu cần
         registerPanel("MAP_LIBRARY", new JPanel());
@@ -95,6 +98,8 @@ public class GameWindow extends JFrame {
             SwingUtilities.invokeLater(panel::requestFocusInWindow);
         } else if (panel instanceof C2Panel) {
             ((C2Panel) panel).onShown();
+        } else if (panel instanceof CFPanel) {
+            ((CFPanel) panel).onShown();
         } else if (panel != null) {
             panel.requestFocusInWindow();
         }
