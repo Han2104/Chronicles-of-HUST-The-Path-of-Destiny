@@ -106,7 +106,7 @@ public class CFPanel extends JPanel {
         standRight     = AssetLoader.loadImage("assets/Vu/character_stand_right (1).png");
         standFront     = AssetLoader.loadImage("assets/Vu/character_stand_front (1).png");
         standBack      = AssetLoader.loadImage("assets/Vu/character_stand_back (1).png");
-        customerSprite = AssetLoader.loadImage("assets/customer_npc.png");
+        customerSprite = snapAlpha(AssetLoader.loadImage("assets/customer_npc.png"), 128);
         loadWalkSprites();
 
         animationTimer = new Timer(120, e -> updateWalkAnimation());
@@ -158,6 +158,21 @@ public class CFPanel extends JPanel {
     }
 
     // ── Sprites ──────────────────────────────────────────────────────────────
+    /** Snap mọi pixel có alpha < threshold thành trong suốt hoàn toàn,
+     *  loại bỏ semi-transparent halo khi scale sprite xuống nhỏ. */
+    private static BufferedImage snapAlpha(BufferedImage src, int threshold) {
+        if (src == null) return null;
+        BufferedImage out = new BufferedImage(src.getWidth(), src.getHeight(), BufferedImage.TYPE_INT_ARGB);
+        for (int y = 0; y < src.getHeight(); y++) {
+            for (int x = 0; x < src.getWidth(); x++) {
+                int argb  = src.getRGB(x, y);
+                int alpha = (argb >> 24) & 0xFF;
+                out.setRGB(x, y, alpha < threshold ? 0 : argb | 0xFF000000);
+            }
+        }
+        return out;
+    }
+
     private void loadWalkSprites() {
         for (int i = 0; i < 4; i++) {
             int n = i + 1;
@@ -441,11 +456,17 @@ public class CFPanel extends JPanel {
     /** Player clicks payment machine again to verify bank transfer */
     private void handleVerifyTransfer() {
         transferAttempts++;
-        if (transferAttempts < 2) {
-            cfDialog("Chờ Xác Nhận", "Khách hàng chưa thanh toán.\nVui lòng đợi và kiểm tra lại.");
-        } else {
-            cfDialog("Thanh Toán Thành Công", "Xác nhận chuyển khoản thành công!\nCảm ơn khách hàng đã sử dụng dịch vụ!");
+        // Lần đầu: 60% thành công ngay, lần 2+: 85% thành công
+        double successRate = transferAttempts == 1 ? 0.60 : 0.85;
+        boolean success = Math.random() < successRate;
+
+        if (success) {
+            cfDialog("Thanh Toán Thành Công",
+                    "Xác nhận chuyển khoản thành công!\nCảm ơn khách hàng đã sử dụng dịch vụ!");
             askDiningChoice();
+        } else {
+            cfDialog("Chờ Xác Nhận",
+                    "Chưa nhận được thanh toán.\nVui lòng bấm lại để kiểm tra.");
         }
         requestFocusInWindow();
     }
