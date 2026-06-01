@@ -1,30 +1,55 @@
 package com.hust.game.ui.panels;
 
-import com.hust.game.core.GameManager;
-import com.hust.game.ui.GameWindow;
-import com.hust.game.util.AssetLoader;
-
-import javax.swing.*;
-import javax.swing.Timer;
-import java.awt.*;
+import java.awt.BasicStroke;
+import java.awt.Color;
+import java.awt.Cursor;
+import java.awt.Font;
+import java.awt.FontMetrics;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.Point;
+import java.awt.Rectangle;
+import java.awt.RenderingHints;
+import java.awt.Window;
 import java.awt.geom.RoundRectangle2D;
 import java.awt.image.BufferedImage;
 import java.awt.image.ImageObserver;
 import java.io.InputStream;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+import javax.swing.AbstractAction;
+import javax.swing.ActionMap;
+import javax.swing.InputMap;
+import javax.swing.JButton;
+import javax.swing.JDialog;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
+import javax.swing.KeyStroke;
+import javax.swing.SwingUtilities;
+import javax.swing.Timer;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
+
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
+
+import com.hust.game.core.GameManager;
+import com.hust.game.ui.GameWindow;
+import com.hust.game.util.AssetLoader;
 
 public class CFPanel extends JPanel {
 
     // ── Constants ────────────────────────────────────────────────────────────
     private static final String CF_MAP_PATH  = "assets/Map/CF/mapcf.tmx";
-    private static final int    PLAYER_W     = 54;
-    private static final int    PLAYER_H     = 86;
+    private static final int    PLAYER_W     = 80;
+    private static final int    PLAYER_H     = 128;
     private static final int    INTERACT_RANGE = 80;
     private static final int    MAX_STOCK      = 6;
     private static final int    RESTOCK_AMOUNT = 1; // +1 mỗi lần bấm, tối đa 6
@@ -266,8 +291,14 @@ public class CFPanel extends JPanel {
     }
 
     private Rectangle getPlayerFeet(int x, int y) {
-        return new Rectangle(x + 10, y + PLAYER_H - 20, PLAYER_W - 20, 16);
-    }
+    int feetW = 34;
+    int feetH = 16;
+
+    int feetX = x + (PLAYER_W - feetW) / 2;
+    int feetY = y + PLAYER_H - 24;
+
+    return new Rectangle(feetX, feetY, feetW, feetH);
+}
 
     private void updateWalkAnimation() {
         if (walking && System.currentTimeMillis() - lastMoveAt > 160) { walking = false; repaint(); return; }
@@ -701,47 +732,61 @@ public class CFPanel extends JPanel {
     }
 
     private void drawCustomers(Graphics2D g2d) {
-        customerRects.clear();
-        if (queueSize <= 0 || customerSprite == null || tiledMap == null) return;
-        Rectangle counter = tiledMap.groupBounds("maythanhtoan");
-        if (counter == null) return;
+    customerRects.clear();
+    if (queueSize <= 0 || customerSprite == null || tiledMap == null) return;
+    Rectangle counter = tiledMap.groupBounds("maythanhtoan");
+    if (counter == null) return;
 
-        int cw = 50, ch = 80, spacing = cw + 6;
-        int baseY = counter.y + counter.height / 2 - ch / 2;
+    int spriteW = 80;
+    int spriteH = 128;
 
-        // Collect obstacles
-        List<Rectangle> obstacles = new ArrayList<>(tiledMap.objectGroups.getOrDefault("ghe", new ArrayList<>()));
-        for (Rectangle vc : tiledMap.collisionBoxes) if (vc.width * vc.height > 400) obstacles.add(vc);
+    int spacingX = spriteW + 6;
+    int rowGap = 55;
+    int firstCustomerGap = 100;
 
-        // Find valid positions scanning left from counter
-        List<Integer> validX = new ArrayList<>();
-        int scanX = counter.x - spacing;
-        while (validX.size() < queueSize && scanX > counter.x - spacing * 15) {
-            Rectangle cand = new Rectangle(scanX, baseY, cw, ch);
-            boolean blocked = obstacles.stream().anyMatch(cand::intersects);
-            if (!blocked) validX.add(scanX);
-            scanX -= spacing;
-        }
-        // Sort descending: index 0 = rightmost = gần quầy nhất
-        validX.sort(Collections.reverseOrder());
+    int baseY = counter.y + counter.height / 2 - spriteH / 2;
 
-        for (int x : validX) {
-            g2d.drawImage(customerSprite, x, baseY, cw, ch, this);
-            customerRects.add(new Rectangle(x, baseY, cw, ch));
-        }
+    List<Rectangle> obstacles = new ArrayList<>(tiledMap.objectGroups.getOrDefault("ghe", new ArrayList<>()));
+    for (Rectangle vc : tiledMap.collisionBoxes) {
+        if (vc.width * vc.height > 400) obstacles.add(vc);
+    }
 
-        // Highlight khách đầu hàng (gần quầy nhất = index 0)
-        if (gameState == GameState.IDLE && !customerRects.isEmpty()) {
-            Rectangle first = customerRects.get(0);
-            g2d.setColor(new Color(255, 220, 50, 160));
-            g2d.setStroke(new java.awt.BasicStroke(2f));
-            g2d.drawRoundRect(first.x - 4, first.y - 4, first.width + 8, first.height + 8, 8, 8);
-            g2d.setFont(new Font("Arial", Font.BOLD, 11));
-            g2d.setColor(new Color(255, 220, 50));
-            g2d.drawString("Click!", first.x + 10, first.y - 8);
+    List<Point> positions = new ArrayList<>();
+
+    int startX = counter.x - spacingX - firstCustomerGap;
+
+    for (int i = 0; i < queueSize; i++) {
+        int row = i / 2;
+        int col = i % 2;
+
+        int x = startX - col * spacingX;
+        int y = baseY + row * rowGap;
+
+        // Check vật cản bằng toàn bộ thân khách
+        Rectangle candHitbox = new Rectangle(x, y, spriteW, spriteH);
+
+        boolean blocked = obstacles.stream().anyMatch(candHitbox::intersects);
+        if (!blocked) {
+            positions.add(new Point(x, y));
         }
     }
 
+    for (Point p : positions) {
+        g2d.drawImage(customerSprite, p.x, p.y, spriteW, spriteH, this);
+
+        // Toàn bộ sprite khách là vật cản
+        Rectangle hitbox = new Rectangle(p.x, p.y, spriteW, spriteH);
+        customerRects.add(hitbox);
+    }
+
+    if (gameState == GameState.IDLE && !customerRects.isEmpty()) {
+        Rectangle first = customerRects.get(0);
+
+        g2d.setFont(new Font("Arial", Font.BOLD, 11));
+        g2d.setColor(new Color(255, 220, 50));
+        g2d.drawString("Click", first.x - 2, first.y - 8);
+    }
+}
     private void drawOccupiedChairMarkers(Graphics2D g2d) {
         if (tiledMap == null || occupiedChairs.isEmpty()) return;
         List<Rectangle> chairs = tiledMap.objectGroups.getOrDefault("ghe", new ArrayList<>());
