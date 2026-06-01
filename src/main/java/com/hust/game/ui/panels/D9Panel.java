@@ -23,7 +23,7 @@ public class D9Panel extends JPanel implements ActionListener, KeyListener {
     private static final String D9_QUESTION_BANK_PATH = "assets/Data/questions/oop_questions.json";
 
     private GameWindow window;
-    private StatsPanel statsPanel;
+
 
     // Game components
     private D9Map map;
@@ -58,7 +58,7 @@ public class D9Panel extends JPanel implements ActionListener, KeyListener {
 
     public D9Panel(GameWindow window, StatsPanel statsPanel) {
         this.window = window;
-        this.statsPanel = statsPanel;
+
 
         setBackground(Color.BLACK);
         setFocusable(true);

@@ -7,11 +7,11 @@ import java.util.Map;
  * D9CheckpointManager - Quản lý checkpoints và teleport player
  */
 public class D9CheckpointManager {
-    private final D9Map map;
+
     private final Map<String, D9Object> checkpoints;
 
     public D9CheckpointManager(D9Map map) {
-        this.map = map;
+
         this.checkpoints = new HashMap<>();
 
         // Index checkpoints by checkpointId

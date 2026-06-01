@@ -14,7 +14,7 @@ public class GameManager {
     private com.hust.game.ui.GameWindow window;
     private int currentHour = 8;
     private int currentMapID = 0; // 0: World Map
-    private int cityRegenCounter = 0;
+
     private long lastLazySpawnTime = 0;
     private long lastEscapeTime = 0;
     private int tickCount = 0;

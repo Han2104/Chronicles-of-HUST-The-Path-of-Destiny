@@ -31,10 +31,6 @@ public class Player {
     
     // Kỹ năng mở khóa (Skills/Buffs)
     private double harvestMultiplier = 1.0;
-    private boolean checkInComboEnabled = false;
-    private boolean fastStudyEnabled = false; 
-    private boolean resistDisciplinePenalty = false;
-    private boolean hustLegendEnabled = false;
     
     // Trang bị và Buff tạm thời
     private long checkInLockedUntil = 0;
@@ -95,7 +91,6 @@ public class Player {
                 System.out.println("🎁 Thưởng: +10 Tài Chính tối đa!");
                 break;
             case 5:
-                checkInComboEnabled = true;
                 System.out.println("🎁 Thưởng: Mở khóa [Check-in Combo]!");
                 break;
             case 6:
@@ -103,7 +98,6 @@ public class Player {
                 System.out.println("🎁 Thưởng: +5 Willpower tối đa!");
                 break;
             case 7:
-                fastStudyEnabled = true;
                 System.out.println("🎁 Thưởng: Mở khóa [Ôn Thi Thần Tốc] (Boss D9 -20% HP)!");
                 break;
             case 8:
@@ -111,11 +105,9 @@ public class Player {
                 System.out.println("🎁 Thưởng: +10 Solution Skill tối đa!");
                 break;
             case 9:
-                resistDisciplinePenalty = true;
                 System.out.println("🎁 Thưởng: Kháng 1 đòn trừ Điểm Rèn Luyện/trận!");
                 break;
             case 10:
-                hustLegendEnabled = true;
                 applyHustLegend();
                 System.out.println("🎁 THƯỞNG TỐI THƯỢNG: [HUST LEGEND] (+30% toàn bộ chỉ số)!");
                 break;
@@ -160,6 +152,9 @@ public class Player {
     }
 
     public double getFinance() { return finance; }
+    public void setFinance(double amount) {
+        this.finance = Math.max(0, Math.min(amount, maxFinance));
+    }
     public void addFinance(double amount) {
         this.finance = Math.min(this.finance + amount, maxFinance);
         System.out.println("💰 Tài chính hiện tại: " + String.format("%.1f", this.finance) + " VNĐ");
@@ -169,7 +164,8 @@ public class Player {
 
     public int getDisciplineScore() { return disciplineScore; }
     public void addDisciplineScore(int amount) {
-        this.disciplineScore = Math.min(this.disciplineScore + amount, maxDisciplineScore);
+        // Hỗ trợ cả giá trị dương (tăng) và âm (trừ, bị debuff)
+        this.disciplineScore = Math.max(0, Math.min(this.disciplineScore + amount, maxDisciplineScore));
     }
 
     public int getWillpower() { return willpower; }

@@ -1,7 +1,7 @@
 package com.hust.game.ui.panels;
 
 import com.hust.game.ui.GameWindow;
-import com.hust.game.models.entities.Player;
+
 import com.hust.game.models.combat.Boss;
 import com.hust.game.core.GameManager;
 import com.hust.game.util.AssetLoader;

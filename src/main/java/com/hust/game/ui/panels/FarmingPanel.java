@@ -16,7 +16,7 @@ public class FarmingPanel extends JPanel {
     private BufferedImage backgroundImage;
     private SonLaMap sonLaLogic;
     private StatsPanel statsPanel;
-    private GameWindow window;
+
 
     private JButton btnBack;
     private JButton btnShop;
@@ -27,7 +27,7 @@ public class FarmingPanel extends JPanel {
     private final double BASE_H = 650.0; // Khoảng trống còn lại sau StatsPanel
 
     public FarmingPanel(GameWindow window, StatsPanel statsPanel) {
-        this.window = window;
+
         this.statsPanel = statsPanel;
         this.sonLaLogic = new SonLaMap();
 

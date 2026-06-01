@@ -15,8 +15,7 @@ public class C2Panel extends JPanel {
     private BufferedImage backgroundImage;
     private BufferedImage[] playerSprites = new BufferedImage[4]; // 0: Down, 1: Left, 2: Right, 3: Up
     private int currentDir = 0; 
-    private StatsPanel statsPanel;
-    private GameWindow window;
+
 
     private JButton btnBack;
     private JButton btnCheckIn;
@@ -32,8 +31,7 @@ public class C2Panel extends JPanel {
     private final double BASE_H = 650.0;
 
     public C2Panel(GameWindow window, StatsPanel statsPanel) {
-        this.window = window;
-        this.statsPanel = statsPanel;
+
 
         setLayout(null); 
         setFocusable(true);
