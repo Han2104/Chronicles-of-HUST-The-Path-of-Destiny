@@ -1,5 +1,6 @@
 package com.hust.game.core;
 
+import com.hust.game.maps.c2.C2Map;
 import com.hust.game.models.entities.Player;
 import javax.swing.JOptionPane;
 
@@ -16,10 +17,13 @@ public class GameManager {
     private int currentMapID = 0; // 0: World Map
 
     private long lastLazySpawnTime = 0;
+    private int cityRegenCounter = 0;
     private long lastEscapeTime = 0;
     private int tickCount = 0;
 
     public void triggerLazyEncounter() {
+        return;
+/*
         if (currentMapID != 2) return;
         
         long now = System.currentTimeMillis();
@@ -41,6 +45,7 @@ public class GameManager {
             com.hust.game.ui.panels.LazyEncounterDialog dialog = new com.hust.game.ui.panels.LazyEncounterDialog(window, statsPanel, npc);
             dialog.setVisible(true);
         });
+*/
     }
 
     public long getLastEscapeTime() { return lastEscapeTime; }
@@ -135,17 +140,20 @@ public class GameManager {
             // 2. Cập nhật giờ game (2 ticks = 1 giờ game = 60s)
             tickCount++;
             if (tickCount >= 2) {
+                int oldHour = currentHour;
                 currentHour = (currentHour + 1) % 24;
                 tickCount = 0;
-                System.out.println("🕓 Giờ hiện tại: " + currentHour + ":00");
-                
+                // System.out.println("🕓 Giờ hiện tại: " + currentHour + ":00");
+                // Kiểm tra nếu bước sang ngày mới (0 giờ sáng)
+                if (oldHour == 23 && currentHour == 0) {
+                    applyDailyPenalty();
+                }
                 // Reset Check-in khi qua buổi
                 if (currentHour == 9) player.setHasCheckedInMorning(false);
                 if (currentHour == 0) player.setHasCheckedInEvening(false);
             }
 
             if (statsPanel != null) statsPanel.updateStats();
-            triggerLazyEncounter();
         });
         energyRegenTimer.start();
     }
@@ -190,6 +198,30 @@ public class GameManager {
                 break;
             default:
                 System.out.println("⚠️ Lỗi: Map ID không hợp lệ.");
+        }
+    }
+    private void applyDailyPenalty() {
+    Player p = getPlayer();
+    
+    // Theo GDD 2.2: Nếu Ý chí (Willpower) < 20[cite: 12]
+    if (p.getWillpower() < 20) {
+        int currentDRL = p.getDisciplineScore();
+        
+        // Tính toán số điểm bị trừ (30% Điểm rèn luyện hiện tại)[cite: 12]
+        int penalty = (int) (currentDRL * 0.3);
+        
+        if (penalty > 0) {
+            p.addDisciplineScore(-penalty); // Trừ điểm[cite: 12]
+            
+            // Thông báo cho người chơi biết để cảnh tỉnh
+            javax.swing.JOptionPane.showMessageDialog(null, 
+                "⚠️ CẢNH BÁO KỶ LUẬT!\n" +
+                "Do Ý chí của bạn quá thấp (< 20), bạn bị cám dỗ lôi kéo.\n" +
+                "Bạn bị trừ " + penalty + " Điểm rèn luyện (30% tổng điểm).",
+                "Hình phạt mỗi ngày", javax.swing.JOptionPane.WARNING_MESSAGE);
+            
+            System.out.println("📉 Hình phạt ngày mới: -" + penalty + " ĐRL do Willpower < 20");
+            }
         }
     }
 }

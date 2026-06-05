@@ -6,6 +6,8 @@ import com.hust.game.ui.panels.WorldMapPanel;
 import com.hust.game.ui.panels.C2Panel;
 import com.hust.game.ui.panels.B1LobbyPanel;
 import com.hust.game.ui.panels.B1Panel;
+import com.hust.game.ui.panels.C2LectureHallPanel;
+import com.hust.game.ui.panels.CFPanel;
 
 import javax.swing.*;
 import java.awt.*;
@@ -53,29 +55,29 @@ public class GameWindow extends JFrame {
 
         // --- Tạo tất cả panels ---
         WorldMapPanel worldMapPanel = new WorldMapPanel(this, statsPanel);
-        FarmingPanel  farmingPanel  = new FarmingPanel(this, statsPanel);
-        C2Panel       c2Panel       = new C2Panel(this, statsPanel);
-        com.hust.game.ui.panels.D9Panel d9Panel =
-                new com.hust.game.ui.panels.D9Panel(this, statsPanel);
-
-        // B1: Lobby sảnh chờ
+        FarmingPanel farmingPanel = new FarmingPanel(this, statsPanel);
+        C2Panel c2Panel = new C2Panel(this, statsPanel);
+        C2LectureHallPanel c2LectureHallPanel = new C2LectureHallPanel(this, statsPanel);
+        com.hust.game.ui.panels.D9Panel d9Panel = new com.hust.game.ui.panels.D9Panel(this, statsPanel);
         B1LobbyPanel b1LobbyPanel = new B1LobbyPanel(this, statsPanel);
-
-        // B1: Gameplay arena (top-down action)
         B1Panel b1Panel = new B1Panel(this, statsPanel);
-
-        // Combat turn-based (giữ tương thích với code cũ)
+        com.hust.game.ui.panels.ArenaPanel arenaPanel = new com.hust.game.ui.panels.ArenaPanel(this, statsPanel);
         this.combatPanel = new com.hust.game.ui.panels.CombatPanel(this, statsPanel);
+        CFPanel cfPanel = new CFPanel(this, statsPanel);
 
-        // --- Đăng ký panels ---
-        registerPanel("WORLD_MAP",     worldMapPanel);
-        registerPanel("MAP_SONLA",     farmingPanel);
-        registerPanel("MAP_C2",        c2Panel);
-        registerPanel("MAP_D9",        d9Panel);
-        registerPanel("MAP_B1",        b1LobbyPanel);   // Sảnh chờ B1
-        registerPanel("B1_ARENA",      b1Panel);         // Gameplay đấu trường
+        registerPanel("WORLD_MAP", worldMapPanel);
+        registerPanel("MAP_SONLA", farmingPanel);
+        registerPanel("MAP_C2", c2Panel);
+        registerPanel("MAP_C2_HALL", c2LectureHallPanel);
+        registerPanel("MAP_D9", d9Panel);
+        registerPanel("MAP_B1", b1LobbyPanel);
+        registerPanel("B1_ARENA", b1Panel);
+        registerPanel("MAP_ARENA_ALT", arenaPanel);
         registerPanel("COMBAT_SCREEN", combatPanel);
-        registerPanel("MAP_LIBRARY",   new JPanel());    // STUB
+        registerPanel("MAP_CF", cfPanel);
+        
+        // Tạm thời để MAP_LIBRARY trỏ về D9 hoặc tạo panel mới nếu cần
+        registerPanel("MAP_LIBRARY", new JPanel());
 
         add(mainContainer, BorderLayout.CENTER);
         showPanel("WORLD_MAP");
@@ -114,6 +116,10 @@ public class GameWindow extends JFrame {
         } else if (panel instanceof B1LobbyPanel) {
             ((B1LobbyPanel) panel).refreshStats();
             SwingUtilities.invokeLater(panel::requestFocusInWindow);
+        } else if (panel instanceof C2Panel) {
+            ((C2Panel) panel).onShown();
+        } else if (panel instanceof CFPanel) {
+            ((CFPanel) panel).onShown();
         } else if (panel != null) {
             panel.requestFocusInWindow();
         }
