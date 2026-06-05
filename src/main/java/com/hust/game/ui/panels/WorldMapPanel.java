@@ -19,6 +19,7 @@ public class WorldMapPanel extends JPanel {
     private GameWindow window;
     private StatsPanel statsPanel;
     private final List<ButtonInfo> mapButtons = new ArrayList<>();
+    private boolean isHanoiUnlocked = false;
     
     // Dùng kích thước ảnh gốc để tính hitbox theo tỷ lệ
     private final double BASE_W = 2976.0;
@@ -46,7 +47,7 @@ public class WorldMapPanel extends JPanel {
         createRegionButton("B1 Đấu Trường Huyền Thoại", 150, 604, 1101, 719, e -> openMap4());
         createRegionButton("D9 Mê Cung Học Thuật", 1620, 604, 980, 760, e -> openMap3());
         createRegionButton("JOB - Vị Thế Quyền Lực", 1320, 430, 350, 500, e -> openJobTreasure());
-        createRegionButton("Xe khách lên Hà Nội", 2600, 1080, 320, 300, e -> showBusIconInfo());
+        createRegionButton("Xe khách lên Hà Nội", 2600, 1080, 320, 300, e -> buyBusTicket());
 
         this.addComponentListener(new java.awt.event.ComponentAdapter() {
             @Override
@@ -96,6 +97,10 @@ public class WorldMapPanel extends JPanel {
     }
 
     private void openMap2() {
+        if (!isHanoiUnlocked) {
+            showLockedMessage();
+            return;
+        }
         System.out.println("[Navigation] Opening C2");
         window.showPanel("MAP_C2");
         GameManager.getInstance().switchMap(2);
@@ -103,6 +108,10 @@ public class WorldMapPanel extends JPanel {
     }
 
     private void openMap3() {
+        if (!isHanoiUnlocked) {
+            showLockedMessage();
+            return;
+        }
         System.out.println("[Navigation] Opening D9");
         window.showPanel("MAP_D9");
         GameManager.getInstance().switchMap(3);
@@ -110,6 +119,10 @@ public class WorldMapPanel extends JPanel {
     }
 
     private void openMap4() {
+        if (!isHanoiUnlocked) {
+            showLockedMessage();
+            return;
+        }
         System.out.println("[Navigation] Opening B1");
         window.showPanel("MAP_B1");
         GameManager.getInstance().switchMap(4);
@@ -122,10 +135,45 @@ public class WorldMapPanel extends JPanel {
                 "JOB - Vị Thế Quyền Lực", JOptionPane.INFORMATION_MESSAGE);
     }
 
-    private void showBusIconInfo() {
+    private void showLockedMessage() {
         JOptionPane.showMessageDialog(this,
-                "Xe khách lên Hà Nội. Nếu chưa có logic riêng, đây là biểu tượng trang trí.",
-                "Xe khách", JOptionPane.INFORMATION_MESSAGE);
+                "Khu vực này ở Hà Nội! Bạn cần mua vé Xe khách (200đ) để di chuyển lên đây.",
+                "Chưa có vé xe", JOptionPane.WARNING_MESSAGE);
+    }
+
+    private void buyBusTicket() {
+        if (isHanoiUnlocked) {
+            JOptionPane.showMessageDialog(this,
+                    "Bạn đã có vé xe lên Hà Nội. Các khu vực C2, D9, B1 đã được mở khóa!",
+                    "Xe khách", JOptionPane.INFORMATION_MESSAGE);
+            return;
+        }
+
+        int ticketPrice = 200;
+        
+        try {
+            com.hust.game.models.entities.Player player = GameManager.getInstance().getPlayer();
+            if (player.getFinance() >= ticketPrice) {
+                int choice = JOptionPane.showConfirmDialog(this,
+                        "Bạn có muốn mua vé xe khách lên Hà Nội với giá 200đ không?",
+                        "Mua vé xe khách", JOptionPane.YES_NO_OPTION);
+                
+                if (choice == JOptionPane.YES_OPTION) {
+                    player.addFinance(-ticketPrice);
+                    isHanoiUnlocked = true;
+                    JOptionPane.showMessageDialog(this,
+                            "Mua vé thành công! Chuyến xe đưa bạn đến Hà Nội.\nĐã mở khóa C2, D9, B1.",
+                            "Xe khách", JOptionPane.INFORMATION_MESSAGE);
+                    statsPanel.updateStats();
+                }
+            } else {
+                JOptionPane.showMessageDialog(this,
+                        "Bạn không đủ tiền mua vé xe khách! Cần " + ticketPrice + "đ (hiện có " + (int)player.getFinance() + "đ).",
+                        "Không đủ tiền", JOptionPane.ERROR_MESSAGE);
+            }
+        } catch (Exception ex) {
+            System.err.println("Lỗi gọi API Player: Vui lòng kiểm tra lại hàm getPlayer(), getFinance() " + ex.getMessage());
+        }
     }
 
     private void repositionComponents() {
