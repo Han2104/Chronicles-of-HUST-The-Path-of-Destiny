@@ -51,10 +51,10 @@ public class D9MapLoader {
 
             // Parse map attributes
             Element mapElement = doc.getDocumentElement();
-            int width = Integer.parseInt(mapElement.getAttribute("width"));
-            int height = Integer.parseInt(mapElement.getAttribute("height"));
-            int tileWidth = Integer.parseInt(mapElement.getAttribute("tilewidth"));
-            int tileHeight = Integer.parseInt(mapElement.getAttribute("tileheight"));
+            int width = parseInt(mapElement.getAttribute("width"), 0);
+            int height = parseInt(mapElement.getAttribute("height"), 0);
+            int tileWidth = parseInt(mapElement.getAttribute("tilewidth"), 32);
+            int tileHeight = parseInt(mapElement.getAttribute("tileheight"), 32);
 
             D9Map map = new D9Map(width, height, tileWidth, tileHeight);
             System.out.println("[D9] Map size: " + width + "x" + height
@@ -548,7 +548,8 @@ public class D9MapLoader {
             return defaultValue;
         }
         try {
-            return Integer.parseInt(value.trim());
+            // Tiled lưu Flip Flags ở 3 bits đầu tiên (vd: 0x80000000) nên phải parse bằng Long để tránh NumberFormatException
+            return (int) Long.parseLong(value.trim());
         } catch (NumberFormatException e) {
             return defaultValue;
         }
