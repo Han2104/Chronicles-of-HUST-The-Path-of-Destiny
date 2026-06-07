@@ -23,9 +23,6 @@ public class B1Boss {
     private long attackCooldown;
 
     // Sine wave movement tracking
-    private double startX;
-    private double startY;
-    private double angle = 0;
 
     // 8-directional movement tracking
     private int moveTimer = 0;
@@ -38,8 +35,6 @@ public class B1Boss {
 
     // =========================================================
     public B1Boss(double startX, double startY) {
-        this.startX = startX;
-        this.startY = startY;
         this.x      = startX;
         this.y      = startY;
 
@@ -108,7 +103,6 @@ public class B1Boss {
         int arenaW = 1000;
         int arenaH = 700;
         int bossW = 70;
-        int bossH = 70;
         int padding = 50;
 
         if (x < padding) { 

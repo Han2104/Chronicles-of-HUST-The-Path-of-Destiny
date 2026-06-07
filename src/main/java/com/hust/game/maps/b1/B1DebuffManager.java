@@ -197,7 +197,6 @@ public class B1DebuffManager {
 
             case TRUC_XUAT:
                 // -20 DisciplineScore từ GameManager.Player
-                int oldScore = gPlayer.getDisciplineScore();
                 // Sử dụng addDisciplineScore với giá trị âm
                 gPlayer.addDisciplineScore(-20);
                 System.out.println("📋 Bị Trực Xuất Điểm Rèn Luyện! -20 Điểm Rèn Luyện.");
